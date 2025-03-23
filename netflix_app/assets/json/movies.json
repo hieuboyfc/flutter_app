@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "title": "Avatar: The Way of Water",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 2,
+    "isHot": true,
+    "isNew": false,
+    "categoryId": 3
+  },
+  {
+    "id": 2,
+    "title": "Oppenheimer",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 7,
+    "isHot": false,
+    "isNew": true,
+    "categoryId": 4
+  },
+  {
+    "id": 3,
+    "title": "John Wick: Chapter 4",
+    "image": "https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 8,
+    "isHot": true,
+    "isNew": false,
+    "categoryId": 1
+  },
+  {
+    "id": 4,
+    "title": "Spider-Man: Across the Spider-Verse",
+    "image": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 5,
+    "isHot": false,
+    "isNew": true,
+    "categoryId": 7
+  },
+  {
+    "id": 5,
+    "title": "The Super Mario Bros. Movie",
+    "image": "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 4,
+    "isHot": true,
+    "isNew": false,
+    "categoryId": 7
+  },
+  {
+    "id": 6,
+    "title": "Dune: Part Two",
+    "image": "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 3,
+    "isHot": false,
+    "isNew": true,
+    "categoryId": 3
+  },
+  {
+    "id": 7,
+    "title": "Mission: Impossible - Dead Reckoning Part One",
+    "image": "https://image.tmdb.org/t/p/w500/NNxYkU70HPurnNCSiCjYAmacwm.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 2,
+    "isHot": true,
+    "isNew": false,
+    "categoryId": 1
+  },
+  {
+    "id": 8,
+    "title": "Guardians of the Galaxy Vol. 3",
+    "image": "https://image.tmdb.org/t/p/w500/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 4,
+    "isHot": false,
+    "isNew": true,
+    "categoryId": 7
+  },
+  {
+    "id": 9,
+    "title": "Fast X",
+    "image": "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 5,
+    "isHot": true,
+    "isNew": false,
+    "categoryId": 1
+  },
+  {
+    "id": 10,
+    "title": "The Marvels",
+    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "episodes": 1,
+    "rating": 8.0,
+    "weekDay": 7,
+    "isHot": false,
+    "isNew": true,
+    "categoryId": 3
+  }
+]
