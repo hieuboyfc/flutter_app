@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
 import 'package:netflix_app/data/models/category_model.dart';
-import 'package:netflix_app/data/services/category_service.dart';
-import 'package:netflix_app/widgets/home/content/movie_category_content.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/auth_service.dart';
+import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
+import 'package:netflix_app/widgets/home/content/movie_category_content.dart';
 
 class MovieContent extends StatefulWidget {
   const MovieContent({super.key});
@@ -33,7 +33,15 @@ class _MovieContentState extends State<MovieContent> {
   late Future<List<MovieModel>> _savedMoviesFuture; // Biến cho phim đã lưu
   late Future<List<CategoryModel>> _categoriesFuture; // Biến cho thể loại
 
-  final List<String> _weekDays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
+  final List<String> _weekDays = [
+    "Thứ 2",
+    "Thứ 3",
+    "Thứ 4",
+    "Thứ 5",
+    "Thứ 6",
+    "Thứ 7",
+    "Chủ nhật",
+  ];
 
   ScrollController _scrollController = ScrollController();
 
@@ -92,7 +100,9 @@ class _MovieContentState extends State<MovieContent> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+              } else if (snapshot.hasError ||
+                  !snapshot.hasData ||
+                  snapshot.data!.isEmpty) {
                 return const Center(child: Text("Không có phim nào!"));
               }
 
@@ -101,7 +111,11 @@ class _MovieContentState extends State<MovieContent> {
                   _buildFeaturedMoviesSlider(snapshot.data!),
                   _buildCategorySelector(),
                   _buildWeekdayMovies(),
-                  _buildFutureMovieList("movies_by_day", _moviesByDayFuture, isSmall: true),
+                  _buildFutureMovieList(
+                    "movies_by_day",
+                    _moviesByDayFuture,
+                    isSmall: true,
+                  ),
                   _buildFutureMovieList("hot_movies", _hotMoviesFuture),
                   _buildFutureMovieList("new_movies", _newMoviesFuture),
                   if (loggedInUser != null)
@@ -123,7 +137,10 @@ class _MovieContentState extends State<MovieContent> {
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
+                image: DecorationImage(
+                  image: NetworkImage(movie.image),
+                  fit: BoxFit.cover,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -149,7 +166,9 @@ class _MovieContentState extends State<MovieContent> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(5, (index) {
                             return Icon(
-                              index < movie.rating ? Icons.star : Icons.star_border,
+                              index < movie.rating
+                                  ? Icons.star
+                                  : Icons.star_border,
                               color: Colors.yellow,
                               size: 16,
                             );
@@ -182,7 +201,9 @@ class _MovieContentState extends State<MovieContent> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (snapshot.hasError ||
+            !snapshot.hasData ||
+            snapshot.data!.isEmpty) {
           return const Center(child: Text("Không có thể loại!"));
         }
 
@@ -205,15 +226,24 @@ class _MovieContentState extends State<MovieContent> {
                       );
                     },
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 10,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         category.name,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   );
@@ -259,7 +289,9 @@ class _MovieContentState extends State<MovieContent> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (snapshot.hasError ||
+            !snapshot.hasData ||
+            snapshot.data!.isEmpty) {
           return const Center(child: Text("Không có phim nào!"));
         }
         return _buildMovieList(keyTitle, snapshot.data!, isSmall);
@@ -267,7 +299,11 @@ class _MovieContentState extends State<MovieContent> {
     );
   }
 
-  Widget _buildMovieList(String keyTitle, List<MovieModel> movies, bool isSmall) {
+  Widget _buildMovieList(
+    String keyTitle,
+    List<MovieModel> movies,
+    bool isSmall,
+  ) {
     String title = _getTitleFromKey(keyTitle);
 
     return Column(
@@ -278,7 +314,13 @@ class _MovieContentState extends State<MovieContent> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: IconButton(
@@ -296,20 +338,102 @@ class _MovieContentState extends State<MovieContent> {
     );
   }
 
-  Widget _buildMovieListContent(String keyTitle, List<MovieModel> movies, bool isSmall) {
+  Widget _buildMovieListContent(
+    String keyTitle,
+    List<MovieModel> movies,
+    bool isSmall,
+  ) {
     return SizedBox(
-      height: isSmall ? 150 : 200,
+      height: isSmall ? 180 : 220, // Điều chỉnh chiều cao
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: movies.length,
         itemBuilder: (context, index) {
           final movie = movies[index];
           return Container(
-            width: isSmall ? 100 : 130,
+            width: isSmall ? 150 : 180, // Điều chỉnh chiều rộng
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
-              image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
+              image: DecorationImage(
+                image: NetworkImage(movie.image),
+                fit: BoxFit.cover,
+              ),
               borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              // Căn chỉnh nội dung vào dưới cùng
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Lớp phủ mờ bao phủ toàn bộ phần text
+                Container(
+                  width: double.infinity,
+                  // Đảm bảo lớp phủ bao phủ toàn bộ container
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Tên bộ phim
+                      Text(
+                        movie.title, // Tên bộ phim
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      // Thêm độ giãn cách giữa tên phim và dòng dưới
+                      SizedBox(height: 4),
+                      // Khoảng cách giữa tên bộ phim và dòng số tập + sao đánh giá
+
+                      // Dòng số tập và sao đánh giá
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // Giãn cách số tập và sao
+                        children: [
+                          // Số tập
+                          Text(
+                            'Tập: ${movie.episodes}', // Hiển thị số tập
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                          // Sao đánh giá (Ví dụ 5.5 sao)
+                          Row(
+                            children: List.generate(5, (starIndex) {
+                              if (starIndex < movie.rating.floor()) {
+                                return Icon(
+                                  Icons.star,
+                                  size: 14,
+                                  color: Colors.yellow,
+                                );
+                              } else if (starIndex == movie.rating.floor() &&
+                                  movie.rating % 1 >= 0.5) {
+                                return Icon(
+                                  Icons.star_half,
+                                  size: 14,
+                                  color: Colors.yellow,
+                                );
+                              } else {
+                                return Icon(
+                                  Icons.star_border,
+                                  size: 14,
+                                  color: Colors.yellow,
+                                );
+                              }
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
         },

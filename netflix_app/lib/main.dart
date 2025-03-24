@@ -1,27 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_app/presentation/screens/splash/splash_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:netflix_app/presentation/screens/base/base_screen.dart';
 import 'package:netflix_app/presentation/screens/home/home_screen.dart';
 import 'package:netflix_app/presentation/screens/profile/profile_screen.dart';
+import 'package:netflix_app/presentation/screens/splash/splash_screen.dart';
+import 'package:netflix_app/presentation/screens/home/movie_category_screen.dart';
 
 void main() {
-  runApp(const NetflixApp());
+  runApp(NetflixApp());
 }
 
 class NetflixApp extends StatelessWidget {
-  const NetflixApp({super.key});
+  NetflixApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Netflix App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/profile': (context) => const ProfileScreen(),
-      },
+      routerConfig: _router,
     );
   }
+
+  final GoRouter _router = GoRouter(
+    initialLocation: '/splash', // Màn hình mặc định
+    routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: '/movie/category/:categoryId',
+        builder: (BuildContext context, GoRouterState state) {
+          final categoryId = int.parse(state.pathParameters['categoryId']!);
+          return BaseScreen(
+            initialIndex: 0,
+            showHeader: true,
+            body: MovieCategoryScreen(categoryId: categoryId),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/search',
+        builder:
+            (context, state) => const Text(
+              'Tìm kiếm',
+              style: TextStyle(fontSize: 24, color: Colors.white),
+            ),
+      ),
+      GoRoute(
+        path: '/playlist',
+        builder:
+            (context, state) => const Text(
+              'Danh sách của tôi',
+              style: TextStyle(fontSize: 24, color: Colors.white),
+            ),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+    ],
+  );
 }
