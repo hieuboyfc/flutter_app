@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? loggedInUser;
   int _currentSlide = 0;
   int _selectedDay = 0;
+  bool _isRefreshing = false;
 
   Map<String, bool> isRefreshingMap = {
     "movies_by_day": false,
@@ -58,6 +59,25 @@ class _HomeScreenState extends State<HomeScreen> {
     _categoriesFuture = CategoryService.loadCategories();
   }
 
+  Future<void> _refreshData() async {
+    setState(() {
+      _isRefreshing = true; // Bắt đầu tải lại dữ liệu
+    });
+
+    await Future.delayed(Duration(seconds: 1)); // Giả lập thời gian chờ API
+
+    setState(() {
+      _moviesFuture = MovieService.loadMovies();
+      _moviesByDayFuture = MovieService.loadMoviesByDay(_selectedDay);
+      _hotMoviesFuture = MovieService.loadHotMovies();
+      _newMoviesFuture = MovieService.loadNewMovies();
+      if (loggedInUser != null) {
+        _savedMoviesFuture = MovieService.loadSavedMovies(loggedInUser!);
+      }
+      _isRefreshing = false;
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -90,44 +110,84 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      initialIndex: 0,
-      showHeader: true,
-      body: ListView(
-        controller: _scrollController,
-        key: PageStorageKey<String>("movie_content"),
-        children: [
-          FutureBuilder<List<MovieModel>>(
-            future: _moviesFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError ||
-                  !snapshot.hasData ||
-                  snapshot.data!.isEmpty) {
-                return const Center(child: Text("Không có phim nào!"));
-              }
+    return Stack(
+      children: [
+        BaseScreen(
+          initialIndex: 0,
+          showHeader: true,
+          body: RefreshIndicator(
+            onRefresh: _refreshData,
+            child: CustomScrollView(
+              key: const PageStorageKey<String>("movie_content"),
+              slivers: [
+                // Danh sách phim chính
+                SliverToBoxAdapter(
+                  child: FutureBuilder<List<MovieModel>>(
+                    future: _moviesFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError ||
+                          !snapshot.hasData ||
+                          snapshot.data!.isEmpty) {
+                        return const Center(child: Text("Không có phim nào!"));
+                      }
 
-              return Column(
-                children: [
-                  _buildFeaturedMoviesSlider(snapshot.data!),
-                  _buildCategorySelector(),
-                  _buildWeekdayMovies(),
-                  _buildFutureMovieList(
+                      return Column(
+                        children: [_buildFeaturedMoviesSlider(snapshot.data!)],
+                      );
+                    },
+                  ),
+                ),
+
+                // Ghim _buildCategorySelector() khi cuộn xuống
+                SliverPersistentHeader(
+                  pinned: true, // Giữ cố định khi cuộn
+                  floating: false,
+                  delegate: _StickyHeaderDelegate(
+                    child: _buildCategorySelector(),
+                    height: 50.0, // Chiều cao của header
+                  ),
+                ),
+
+                // Danh sách phim khác
+                SliverToBoxAdapter(child: _buildWeekdayMovies()),
+                SliverToBoxAdapter(
+                  child: _buildFutureMovieList(
                     "movies_by_day",
                     _moviesByDayFuture,
                     isSmall: true,
                   ),
-                  _buildFutureMovieList("hot_movies", _hotMoviesFuture),
-                  _buildFutureMovieList("new_movies", _newMoviesFuture),
-                  if (loggedInUser != null)
-                    _buildFutureMovieList("saved_movies", _savedMoviesFuture),
-                ],
-              );
-            },
+                ),
+                SliverToBoxAdapter(
+                  child: _buildFutureMovieList("hot_movies", _hotMoviesFuture),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildFutureMovieList("new_movies", _newMoviesFuture),
+                ),
+                if (loggedInUser != null)
+                  SliverToBoxAdapter(
+                    child: _buildFutureMovieList(
+                      "saved_movies",
+                      _savedMoviesFuture,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+
+        // Lớp loading bao phủ toàn bộ màn hình khi _isRefreshing == true
+        if (_isRefreshing)
+          Container(
+            color: Colors.black.withOpacity(0.5), // Lớp che mờ
+            child: const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -198,53 +258,83 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCategorySelector() {
-    return FutureBuilder<List<CategoryModel>>(
-      future: _categoriesFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError ||
-            !snapshot.hasData ||
-            snapshot.data!.isEmpty) {
-          return const Center(child: Text("Không có thể loại!"));
-        }
+    return SizedBox(
+      height: 40, // Điều chỉnh chiều cao để phù hợp với header
+      child: FutureBuilder<List<CategoryModel>>(
+        future: _categoriesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator(color: Colors.red));
+          } else if (snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                "Không có thể loại!",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children:
-                snapshot.data!.map((category) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Điều hướng đến màn hình MovieCategory bằng GoRouter
-                      context.go('/movie/category/${category.id}');
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 10,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        category.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-          ),
-        );
-      },
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              double totalWidth =
+                  snapshot.data!.length * 120.0; // Ước tính chiều rộng tổng
+              bool shouldCenter =
+                  totalWidth <
+                  constraints.maxWidth; // Kiểm tra có cần căn giữa không
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment:
+                      shouldCenter
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                  children:
+                      snapshot.data!.map((category) {
+                        return GestureDetector(
+                          onTap: () {
+                            context.go('/movie/category/${category.id}');
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Colors.redAccent,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.redAccent.withOpacity(0.3),
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              category.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -260,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
                 color: _selectedDay == index ? Colors.redAccent : Colors.grey,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(15),
               ),
               child: Text(
                 _weekDays[index],
@@ -308,11 +398,39 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Tiêu đề danh mục
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white, // Giống Netflix
+                ),
+              ),
+
+              // Nút "Xem thêm"
+              GestureDetector(
+                onTap: () {
+                  // Điều hướng đến danh sách đầy đủ của danh mục phim
+                  context.go('/movie/list-by/$keyTitle');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.redAccent, width: 1.5),
+                  ),
+                  child: Text(
+                    "Xem thêm",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.redAccent,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -427,5 +545,38 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return "Danh Sách Phim";
     }
+  }
+}
+
+// Tạo Delegate cho SliverPersistentHeader
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+
+  _StickyHeaderDelegate({required this.child, required this.height});
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      height: height,
+      color: Colors.black,
+      padding: EdgeInsets.symmetric(vertical: 5), // Điều chỉnh padding nếu cần
+      child: Center(child: child), // Đảm bảo căn giữa nội dung
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }

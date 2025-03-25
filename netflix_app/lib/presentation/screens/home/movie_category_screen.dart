@@ -168,49 +168,44 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
   }
 
   Widget _buildPagination() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Nếu lỗi xảy ra theo chiều ngang
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20), // Đẩy lên một chút
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_totalPages > 1)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_currentPage > 1) _buildPageButton("❮", _currentPage - 1),
-                  for (int i = 1; i <= _totalPages; i++)
-                    _buildPageButton("$i", i, isSelected: i == _currentPage),
-                  if (_currentPage < _totalPages)
-                    _buildPageButton("❯", _currentPage + 1),
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (_currentPage > 1)
+            _buildPageButton(Icons.chevron_left, _currentPage - 1),
+          for (int i = 1; i <= _totalPages; i++)
+            if (i == 1 ||
+                i == _totalPages ||
+                (i >= _currentPage - 1 && i <= _currentPage + 1))
+              _buildPageButton(null, i, isSelected: i == _currentPage),
+          if (_currentPage < _totalPages)
+            _buildPageButton(Icons.chevron_right, _currentPage + 1),
+
+          if (_totalPages > 0)
+            // 🔥 Tổng số trang (ở bên phải)
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                "$_currentPage / $_totalPages",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
 
-  Widget _buildPageButton(String text, int page, {bool isSelected = false}) {
+  Widget _buildPageButton(IconData? icon, int page, {bool isSelected = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      // Giảm khoảng cách giữa các nút
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.red : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          // Giảm bo góc
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          // Giảm padding để nút nhỏ hơn
-          minimumSize: const Size(30, 25),
-          // Kích thước tối thiểu
-          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          // Giảm font size
-          elevation: isSelected ? 3 : 1, // Hiệu ứng nổi hơn khi được chọn
-        ),
-        onPressed: () {
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: GestureDetector(
+        onTap: () {
           if (_currentPage != page) {
             setState(() {
               _currentPage = page;
@@ -218,7 +213,30 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
             });
           }
         },
-        child: Text(text),
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.red : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.6),
+              width: isSelected ? 2 : 1,
+            ),
+          ),
+          alignment: Alignment.center,
+          child:
+              icon != null
+                  ? Icon(icon, color: Colors.white, size: 20)
+                  : Text(
+                    "$page",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.white70,
+                    ),
+                  ),
+        ),
       ),
     );
   }
@@ -232,39 +250,119 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
 
     final selectedCategory = await showMenu<CategoryModel>(
       context: context,
-      color: Colors.black87, // Nền tối phong cách Netflix
+      color: Colors.black87, // Đặt nền tối giúp menu không bị mờ
       position: RelativeRect.fromLTRB(
         position.dx,
         position.dy + 10,
         overlay.size.width - position.dx,
         0,
       ),
-      items:
-          categories.map((category) {
-            return PopupMenuItem<CategoryModel>(
-              value: category,
-              child: ListTile(
-                leading: const Icon(Icons.movie, color: Colors.red, size: 24),
-                // Icon đỏ đậm
-                title: Text(
-                  category.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ), // Chữ trắng đậm
-                ),
+      items: [
+        PopupMenuItem(
+          // enabled: false, // Không chọn được, chỉ chứa danh sách có cuộn
+          padding: EdgeInsets.zero,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 260, // Giới hạn chiều cao để không bị tràn
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children:
+                    categories.map((category) {
+                      bool isSelected = category.id == _selectedCategoryId;
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pop(
+                            context,
+                            category,
+                          ); // Đóng menu khi chọn
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 12,
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? Colors.red.withOpacity(
+                                      0.9,
+                                    ) // Màu nổi bật khi chọn
+                                    : Colors
+                                        .black87, // Màu nền tối giúp không bị mờ
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow:
+                                isSelected
+                                    ? [
+                                      BoxShadow(
+                                        color: Colors.red.withOpacity(0.6),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ]
+                                    : [],
+                          ),
+                          child: Row(
+                            children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                transitionBuilder:
+                                    (child, animation) => ScaleTransition(
+                                      scale: animation,
+                                      child: child,
+                                    ),
+                                child: Icon(
+                                  isSelected ? Icons.check_circle : Icons.movie,
+                                  key: ValueKey(isSelected),
+                                  color:
+                                      isSelected
+                                          ? Colors.white
+                                          : Colors.redAccent,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Khoảng cách giữa icon & text
+                              Expanded(
+                                // Bao phủ toàn bộ width
+                                child: Text(
+                                  category.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        isSelected
+                                            ? Colors.white
+                                            : Colors.grey[300],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
               ),
-            );
-          }).toList(),
+            ),
+          ),
+        ),
+      ],
     );
 
     if (selectedCategory != null) {
       setState(() {
-        _selectedCategoryId = selectedCategory.id; // Cập nhật categoryId mới
+        _selectedCategoryId = selectedCategory.id;
         _categoryFuture = CategoryService.loadCategoryById(_selectedCategoryId);
-        _currentPage = 1; // Reset về trang đầu
-        _loadMovies(); // Gọi lại load phim
+        _currentPage = 1;
+        _loadMovies();
       });
     }
   }
@@ -281,7 +379,14 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
             } else if (snapshot.hasError || !snapshot.hasData) {
               return const Text("No category found");
             }
-            return Text(snapshot.data!.name);
+            return Text(
+              snapshot.data!.name,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.white70, // Màu chữ nhẹ nhàng hơn
+              ),
+            );
           },
         ),
         actions: [
@@ -308,35 +413,75 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
       ),
       body: Column(
         children: [
-          // 🔹 Dropdown để chọn số bản ghi hiển thị mỗi trang
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Số phim mỗi trang: "),
-                DropdownButton<int>(
-                  value: _pageSize,
-                  items:
-                      [1, 10, 20, 30, 50].map((size) {
-                        return DropdownMenuItem<int>(
-                          value: size,
-                          child: Text("$size phim"),
-                        );
-                      }).toList(),
-                  onChanged: (newSize) {
-                    if (newSize != null) {
-                      setState(() {
-                        _pageSize = newSize;
-                        _currentPage = 1; // Reset về trang đầu khi đổi số lượng
-                        _loadMovies(); // Load lại dữ liệu
-                      });
-                    }
-                  },
+          _totalPages > 0
+              ?
+              // 🔹 Dropdown để chọn số bản ghi hiển thị mỗi trang
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Số phim mỗi trang:",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white70, // Màu chữ nhẹ nhàng hơn
+                      ),
+                    ),
+                    Container(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black87, // Nền tối giống Netflix
+                        borderRadius: BorderRadius.circular(
+                          10,
+                        ), // Bo góc mềm mại
+                        border: Border.all(
+                          color: Colors.redAccent,
+                          width: 1.5,
+                        ), // Viền đỏ nổi bật
+                      ),
+                      child: DropdownButton<int>(
+                        value: _pageSize,
+                        dropdownColor: Colors.black87,
+                        // Nền dropdown tối hơn
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.redAccent,
+                        ),
+                        underline: Container(),
+                        // Ẩn gạch chân
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                        // Chữ trắng
+                        items:
+                            [1, 10, 20, 30, 50].map((size) {
+                              return DropdownMenuItem<int>(
+                                value: size,
+                                child: Text("$size phim"),
+                              );
+                            }).toList(),
+                        onChanged: (newSize) {
+                          if (newSize != null) {
+                            setState(() {
+                              _pageSize = newSize;
+                              _currentPage = 1;
+                              _loadMovies();
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              )
+              : Text("Không tìm thấy phim"),
 
           Expanded(
             child: _buildMovieGrid(), // Hiển thị danh sách phim
