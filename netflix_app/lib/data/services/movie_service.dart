@@ -6,10 +6,90 @@ import 'package:shared_preferences/shared_preferences.dart'; // Thư viện Shar
 import '../models/movie_model.dart';
 
 class MovieService {
+  static const int _pageSize = 10;
   static List<MovieModel>? _cachedMovies; // Cache để tránh load nhiều lần
 
+  // Giả lập lấy danh sách phim
+  static Future<List<MovieModel>> loadMovies({int page = 1}) async {
+    // Giả lập dữ liệu từ file JSON
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+
+    // Tính toán chỉ mục bắt đầu và kết thúc cho phân trang
+    final startIndex = (page - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+
+    // Lấy dữ liệu trong phạm vi trang hiện tại
+    final paginatedMovies = movies.sublist(
+      startIndex,
+      endIndex <= movies.length ? endIndex : movies.length,
+    );
+
+    // Chuyển đổi dữ liệu từ JSON thành danh sách các MovieModel
+    return paginatedMovies.toList();
+  }
+
+  // Tương tự, giả lập lấy phim theo ngày hoặc các loại phim khác
+  static Future<List<MovieModel>> loadMoviesByDay(
+    int dayIndex, {
+    int page = 1,
+  }) async {
+    List<MovieModel> movies = await MovieService.loadAllMovies();
+    movies = movies.where((item) => item.weekDay == dayIndex).toList();
+
+    final startIndex = (page - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+    final paginatedMovies = movies.sublist(
+      startIndex,
+      endIndex <= movies.length ? endIndex : movies.length,
+    );
+
+    return paginatedMovies.toList();
+  }
+
+  static Future<List<MovieModel>> loadHotMovies({int page = 1}) async {
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+
+    final startIndex = (page - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+    final paginatedMovies = movies.sublist(
+      startIndex,
+      endIndex <= movies.length ? endIndex : movies.length,
+    );
+
+    return paginatedMovies.toList();
+  }
+
+  static Future<List<MovieModel>> loadNewMovies({int page = 1}) async {
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+
+    final startIndex = (page - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+    final paginatedMovies = movies.sublist(
+      startIndex,
+      endIndex <= movies.length ? endIndex : movies.length,
+    );
+
+    return paginatedMovies.toList();
+  }
+
+  static Future<List<MovieModel>> loadSavedMovies(
+    String userId, {
+    int page = 1,
+  }) async {
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+
+    final startIndex = (page - 1) * _pageSize;
+    final endIndex = startIndex + _pageSize;
+    final paginatedMovies = movies.sublist(
+      startIndex,
+      endIndex <= movies.length ? endIndex : movies.length,
+    );
+
+    return paginatedMovies.toList();
+  }
+
   // Hàm tải tất cả phim từ JSON (nếu chưa có cache)
-  static Future<List<MovieModel>> loadMovies() async {
+  static Future<List<MovieModel>> loadAllMovies() async {
     if (_cachedMovies != null) return _cachedMovies!; // Dùng cache nếu có
 
     try {
@@ -31,7 +111,7 @@ class MovieService {
     int page,
     int pageSize,
   ) async {
-    final List<MovieModel> movies = await MovieService.loadMovies();
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
 
     // Lọc phim theo thể loại
     final List<MovieModel> filteredMovies =
@@ -51,61 +131,53 @@ class MovieService {
     );
   }
 
-  static Future<List<MovieModel>> loadMoviesByCategory(int categoryId) async {
-    final List<MovieModel> movies = await MovieService.loadMovies();
-    return movies.where((m) => m.categoryId == categoryId).toList();
-  }
+  // Hàm tải danh sách phim theo thể loại với phân trang
+  static Future<List<MovieModel>> loadMoviesByWithPagination(
+    int categoryId,
+    String keyTitle,
+    int page,
+    int pageSize,
+  ) async {
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+    List<MovieModel> filterMovies = [];
 
-  // Hàm tải phim theo ngày trong tuần
-  static Future<List<MovieModel>> loadMoviesByDay(int day) async {
-    final List<MovieModel> movies = await loadMovies();
-    return movies.where((m) => m.weekDay == day).toList();
-  }
+    // Lọc phim theo tiêu chí
+    switch (keyTitle) {
+      case "hot_movies":
+        filterMovies = movies.where((m) => m.rating >= 8.0).toList();
+        break;
+      case "new_movies":
+        filterMovies = movies.where((m) => m.episodes == 1).toList();
+        break;
+      default:
+        filterMovies = movies;
+    }
 
-  // Hàm tải phim hot (rating >= 8.0)
-  static Future<List<MovieModel>> loadHotMovies() async {
-    final List<MovieModel> movies = await loadMovies();
-    return movies.where((m) => m.rating >= 8.0).toList();
-  }
+    // Lọc phim theo thể loại
+    final List<MovieModel> filteredMovies =
+        filterMovies
+            .where((m) => categoryId == 0 || m.categoryId == categoryId)
+            .toList();
 
-  // Hàm tải phim mới (chỉ có 1 tập)
-  static Future<List<MovieModel>> loadNewMovies() async {
-    final List<MovieModel> movies = await loadMovies();
-    return movies.where((m) => m.episodes == 1).toList();
-  }
+    // Tính vị trí bắt đầu và kết thúc của trang
+    int startIndex = (page - 1) * pageSize;
+    int endIndex = startIndex + pageSize;
 
-  static Future<List<MovieModel>> loadIsWatchedMovies() async {
-    final List<MovieModel> movies = await loadMovies();
-    return movies.where((m) => m.isWatched).toList();
-  }
-
-  // Hàm tải danh sách phim đã lưu từ SharedPreferences
-  static Future<List<MovieModel>> loadSavedMovies(String userId) async {
-    try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // Lấy danh sách ID phim đã lưu từ SharedPreferences dưới dạng List<int>
-      List<int>? savedMovieIds =
-          prefs
-              .getStringList('saved_movies_$userId')
-              ?.map((e) => int.parse(e))
-              .toList();
-
-      if (savedMovieIds == null || savedMovieIds.isEmpty) {
-        return []; // Nếu không có phim đã lưu, trả về danh sách rỗng
-      }
-
-      // Tải tất cả các phim và lọc ra những phim đã lưu
-      final List<MovieModel> movies = await loadMovies();
-      List<MovieModel> savedMovies =
-          movies.where((movie) {
-            return savedMovieIds.contains(movie.id); // So sánh ID phim
-          }).toList();
-
-      return savedMovies;
-    } catch (e) {
-      print("Lỗi khi tải phim đã lưu: $e");
+    // Kiểm tra nếu startIndex vượt quá danh sách
+    if (startIndex >= filteredMovies.length) {
       return [];
     }
+
+    // Trả về danh sách con của các phim theo trang
+    return filteredMovies.sublist(
+      startIndex,
+      endIndex.clamp(0, filteredMovies.length),
+    );
+  }
+
+  static Future<List<MovieModel>> loadMoviesByCategory(int categoryId) async {
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+    return movies.where((m) => m.categoryId == categoryId).toList();
   }
 
   // Hàm làm mới dữ liệu (khi cần cập nhật)

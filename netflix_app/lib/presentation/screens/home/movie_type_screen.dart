@@ -4,22 +4,24 @@ import 'package:netflix_app/data/models/category_model.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
+import 'package:netflix_app/utils/utils.dart';
 import 'package:netflix_app/widgets/custom/pagination_widget.dart';
 import 'package:netflix_app/widgets/home/content/movie_grid.dart';
 
-class MovieCategoryScreen extends StatefulWidget {
-  final int categoryId;
+class MovieTypeScreen extends StatefulWidget {
+  final String code;
 
-  const MovieCategoryScreen({super.key, required this.categoryId});
+  const MovieTypeScreen({super.key, required this.code});
 
   @override
-  MovieCategoryScreenState createState() => MovieCategoryScreenState();
+  MovieTypeScreenState createState() => MovieTypeScreenState();
 }
 
-class MovieCategoryScreenState extends State<MovieCategoryScreen> {
-  late int _selectedCategoryId;
+class MovieTypeScreenState extends State<MovieTypeScreen> {
+  late int _selectedCategoryId = 0;
   late Future<CategoryModel?> _categoryFuture; // Future cho Category
   late Future<List<CategoryModel>> _categoriesFuture; // Future cho Category
+  late String _title;
   int _currentPage = 1; // Số trang hiện tại
   int _pageSize = 1; // Số lượng phim mỗi trang
   bool _isLoading = false; // Biến kiểm tra trạng thái tải dữ liệu
@@ -30,9 +32,13 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCategoryId = widget.categoryId;
-    _categoryFuture = CategoryService.loadCategoryById(_selectedCategoryId);
+    if (_selectedCategoryId != 0) {
+      _categoryFuture = CategoryService.loadCategoryById(_selectedCategoryId);
+    } else {
+      _categoryFuture = Future.value(null);
+    }
     _categoriesFuture = CategoryService.loadCategories();
+    _title = getTitleFromKey(widget.code);
     _loadMovies(); // Tải phim cho trang đầu tiên
   }
 
@@ -41,10 +47,12 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
     if (_isLoading) return;
     setState(() => _isLoading = true);
 
-    final allMovies =
-        await MovieService.loadAllMovies(); // Lấy toàn bộ danh sách phim trước
-    final movies = await MovieService.loadMoviesByCategoryWithPagination(
+    // Lấy toàn bộ danh sách phim trước
+    final allMovies = await MovieService.loadAllMovies();
+
+    final movies = await MovieService.loadMoviesByWithPagination(
       _selectedCategoryId,
+      widget.code,
       _currentPage,
       _pageSize,
     );
@@ -52,8 +60,7 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
     setState(() {
       _isLoading = false;
       _movies = movies;
-      int totalMovies =
-          allMovies.where((m) => m.categoryId == _selectedCategoryId).length;
+      int totalMovies = allMovies.length;
       _totalPages = (totalMovies / _pageSize).ceil(); // Tính lại số trang
     });
   }
@@ -103,7 +110,6 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
       ),
       items: [
         PopupMenuItem(
-          // enabled: false, // Không chọn được, chỉ chứa danh sách có cuộn
           padding: EdgeInsets.zero,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
@@ -118,10 +124,28 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
 
                       return GestureDetector(
                         onTap: () {
+                          setState(() {
+                            // Nếu đã chọn danh mục hiện tại, reset
+                            if (_selectedCategoryId == category.id) {
+                              _selectedCategoryId = 0;
+                              _categoryFuture = Future.value(
+                                null,
+                              ); // Xóa dữ liệu category
+                            } else {
+                              // Cập nhật danh mục mới
+                              _selectedCategoryId = category.id;
+                              _categoryFuture =
+                                  CategoryService.loadCategoryById(
+                                    _selectedCategoryId,
+                                  );
+                            }
+                          });
                           Navigator.pop(
                             context,
                             category,
                           ); // Đóng menu khi chọn
+                          _currentPage = 1;
+                          _loadMovies(); // Lọc lại các bộ phim
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
@@ -140,8 +164,7 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
                                     ? Colors.red.withValues(
                                       alpha: 0.9,
                                     ) // Màu nổi bật khi chọn
-                                    : Colors
-                                        .black87, // Màu nền tối giúp không bị mờ
+                                    : Colors.black87,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow:
                                 isSelected
@@ -176,9 +199,7 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              // Khoảng cách giữa icon & text
                               Expanded(
-                                // Bao phủ toàn bộ width
                                 child: Text(
                                   category.name,
                                   style: TextStyle(
@@ -203,12 +224,11 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
       ],
     );
 
-    if (selectedCategory != null) {
+    // Nếu không có category nào được chọn, set lại dữ liệu category về null
+    if (selectedCategory == null) {
       setState(() {
-        _selectedCategoryId = selectedCategory.id;
-        _categoryFuture = CategoryService.loadCategoryById(_selectedCategoryId);
-        _currentPage = 1;
-        _loadMovies();
+        _selectedCategoryId = 0;
+        _categoryFuture = Future.value(null);
       });
     }
   }
@@ -217,23 +237,69 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: FutureBuilder<CategoryModel?>(
-          future: _categoryFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading...");
-            } else if (snapshot.hasError || !snapshot.hasData) {
-              return const Text("No category found");
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (GoRouter.of(context).canPop()) {
+              GoRouter.of(context).pop();
+            } else {
+              context.go('/home');
             }
-            return Text(
-              snapshot.data!.name,
+          },
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _title.isNotEmpty ? _title : "Loading...",
+              // Nếu _title không rỗng, hiển thị _title, nếu không hiển thị "Loading..."
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Colors.white, // Màu chữ nhẹ nhàng hơn
               ),
-            );
-          },
+            ),
+
+            const SizedBox(width: 8),
+
+            // Sử dụng FutureBuilder để hiển thị tên thể loại từ _categoryFuture
+            FutureBuilder<CategoryModel?>(
+              future: _categoryFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text(
+                    "Loading...",
+                    style: TextStyle(fontSize: 18, color: Colors.white70),
+                  );
+                } else if (snapshot.hasError || !snapshot.hasData) {
+                  return const Text("");
+                }
+                final category = snapshot.data;
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ), // Khoảng cách trong viền
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent, // Màu nền đỏ
+                    border: Border.all(
+                      color: Colors.redAccent, // Màu viền đỏ đậm
+                      width: 2, // Độ dày viền
+                    ),
+                    borderRadius: BorderRadius.circular(8), // Bo góc viền
+                  ),
+                  child: Text(
+                    category?.name ?? 'Danh mục không xác định',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white, // Màu chữ trắng
+                      fontWeight: FontWeight.w500, // Làm chữ đậm
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         actions: [
           GestureDetector(
@@ -246,16 +312,6 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
             ),
           ),
         ],
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (GoRouter.of(context).canPop()) {
-              GoRouter.of(context).pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
       ),
       body: Column(
         children: [
@@ -271,7 +327,7 @@ class MovieCategoryScreenState extends State<MovieCategoryScreen> {
                       "Số phim mỗi trang:",
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white70, // Màu chữ nhẹ nhàng hơn
                       ),
                     ),

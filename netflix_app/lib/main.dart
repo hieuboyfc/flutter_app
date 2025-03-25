@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:netflix_app/presentation/screens/base/base_screen.dart';
+import 'package:netflix_app/presentation/screens/base/error_screen.dart';
 import 'package:netflix_app/presentation/screens/home/home_screen.dart';
+import 'package:netflix_app/presentation/screens/home/movie_category_screen.dart';
+import 'package:netflix_app/presentation/screens/home/movie_type_screen.dart';
 import 'package:netflix_app/presentation/screens/profile/profile_screen.dart';
 import 'package:netflix_app/presentation/screens/splash/splash_screen.dart';
-import 'package:netflix_app/presentation/screens/home/movie_category_screen.dart';
 
 void main() {
   runApp(NetflixApp());
@@ -43,6 +45,17 @@ class NetflixApp extends StatelessWidget {
         },
       ),
       GoRoute(
+        path: '/movie/type/:code',
+        builder: (BuildContext context, GoRouterState state) {
+          final code = state.pathParameters['code']!;
+          return BaseScreen(
+            initialIndex: 0,
+            showHeader: true,
+            body: MovieTypeScreen(code: code),
+          );
+        },
+      ),
+      GoRoute(
         path: '/search',
         builder:
             (context, state) => const Text(
@@ -63,5 +76,9 @@ class NetflixApp extends StatelessWidget {
         builder: (context, state) => const ProfileScreen(),
       ),
     ],
+    // Định nghĩa một route catch-all cho các đường dẫn không hợp lệ
+    errorBuilder: (context, state) {
+      return const ErrorScreen();
+    },
   );
 }

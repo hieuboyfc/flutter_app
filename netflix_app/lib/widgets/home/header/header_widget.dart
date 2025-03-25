@@ -58,19 +58,25 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   void _goToProfile() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfileScreen()),
+    );
   }
 
   /// 🚀 Load danh sách phim từ JSON
   void _loadMovies() async {
-    _allMovies = await MovieService.loadMovies();
+    _allMovies = await MovieService.loadAllMovies();
   }
 
   /// 🔍 Lọc phim theo từ khóa
   void _filterMovies(String query) {
     List<MovieModel> filteredMovies =
         _allMovies
-            .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
+            .where(
+              (movie) =>
+                  movie.title.toLowerCase().contains(query.toLowerCase()),
+            )
             .toList();
     widget.onSearchResults(filteredMovies);
   }
@@ -99,7 +105,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   hintStyle: TextStyle(color: Colors.white54),
                   prefixIcon: const Icon(Icons.search, color: Colors.white),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.2),
+                  fillColor: Colors.white.withValues(alpha: 0.2),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
@@ -115,7 +121,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 onTap: _showAuthPopup,
                 child: const CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage('assets/images/default_avatar.png'),
+                  backgroundImage: AssetImage(
+                    'assets/images/default_avatar.png',
+                  ),
                 ),
               )
               : PopupMenuButton<int>(
@@ -127,7 +135,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   }
                 },
                 offset: const Offset(0, 50),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 color: Colors.black87,
                 itemBuilder:
                     (context) => [
@@ -139,7 +149,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: [
                             const CircleAvatar(
                               radius: 20,
-                              backgroundImage: AssetImage('assets/images/user_avatar.png'),
+                              backgroundImage: AssetImage(
+                                'assets/images/user_avatar.png',
+                              ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -164,7 +176,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: const [
                             Icon(Icons.settings, color: Colors.white),
                             SizedBox(width: 10),
-                            Text("Hồ sơ", style: TextStyle(color: Colors.white)),
+                            Text(
+                              "Hồ sơ",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ],
                         ),
                       ),
@@ -176,7 +191,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: const [
                             Icon(Icons.exit_to_app, color: Colors.red),
                             SizedBox(width: 10),
-                            Text("Đăng xuất", style: TextStyle(color: Colors.red)),
+                            Text(
+                              "Đăng xuất",
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),

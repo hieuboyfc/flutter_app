@@ -1,3 +1,4 @@
+/*
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -36,19 +37,31 @@ class HomeScreenState extends State<HomeScreen> {
   final Map<String, bool> _isLoadingMore = {};
 
   late Future<List<CategoryModel>> _categoriesFuture;
-  List<MovieModel> _movies = [];
-  List<MovieModel> _hotMovies = [];
-  List<MovieModel> _newMovies = [];
-  List<MovieModel> _moviesByDay = [];
-  List<MovieModel> _savedMovies = [];
+  late Future<List<MovieModel>> _moviesFuture;
+  late Future<List<MovieModel>> _hotMoviesFuture;
+  late Future<List<MovieModel>> _newMoviesFuture;
+  late Future<List<MovieModel>> _moviesByDayFuture;
+  late Future<List<MovieModel>> _savedMoviesFuture;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     _checkLoginStatus();
+
+    // Khởi tạo các Future cho các danh sách dữ liệu
     _categoriesFuture = CategoryService.loadCategories();
-    // Gọi phương thức bất đồng bộ sau khi widget đã được khởi tạo
-    _loadData();
+    _moviesFuture = MovieService.loadMovies();
+    _hotMoviesFuture = MovieService.loadHotMovies();
+    _newMoviesFuture = MovieService.loadNewMovies();
+    _moviesByDayFuture = MovieService.loadMoviesByDay(_selectedDay);
+
+    // Nếu người dùng đã đăng nhập, tải phim đã lưu
+    if (loggedInUser != null) {
+      _savedMoviesFuture = MovieService.loadSavedMovies(loggedInUser!);
+    }
+
+    _initScrollControllers();
+    _initPaginationState();
   }
 
   @override
@@ -57,33 +70,6 @@ class HomeScreenState extends State<HomeScreen> {
       controller.dispose();
     }
     super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    // Chờ các dữ liệu mới
-    List<MovieModel> movies = await MovieService.loadMovies();
-    List<MovieModel> hotMovies = await MovieService.loadHotMovies();
-    List<MovieModel> newMovies = await MovieService.loadNewMovies();
-    List<MovieModel> moviesByDay = await MovieService.loadMoviesByDay(
-      _selectedDay,
-    );
-
-    List<MovieModel> savedMovies = [];
-    if (loggedInUser != null) {
-      savedMovies = await MovieService.loadSavedMovies(loggedInUser!);
-    }
-
-    // Cập nhật lại state sau khi dữ liệu đã được tải
-    setState(() {
-      _movies = movies;
-      _hotMovies = hotMovies;
-      _newMovies = newMovies;
-      _moviesByDay = moviesByDay;
-      _savedMovies = savedMovies;
-    });
-
-    _initScrollControllers();
-    _initPaginationState();
   }
 
   void _initScrollControllers() {
@@ -162,13 +148,13 @@ class HomeScreenState extends State<HomeScreen> {
       setState(() {
         // Cập nhật các danh sách phim
         if (keyTitle == "hot_movies") {
-          _hotMovies.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
+          _hotMoviesFuture.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
         } else if (keyTitle == "new_movies") {
-          _newMovies.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
+          _newMoviesFuture.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
         } else if (keyTitle == "movies_by_day") {
-          _moviesByDay.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
+          _moviesByDayFuture.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
         } else if (keyTitle == "saved_movies" && loggedInUser != null) {
-          _savedMovies.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
+          _savedMoviesFuture.addAll(newMovies); // Thêm dữ liệu mới vào danh sách cũ
         }
 
         // Cập nhật trạng thái
@@ -188,28 +174,21 @@ class HomeScreenState extends State<HomeScreen> {
       _isRefreshing = true; // Bắt đầu tải lại dữ liệu
     });
 
+    // Giả lập thời gian chờ API (hoặc bạn có thể thay bằng chờ thực sự nếu cần)
+    await Future.delayed(Duration(seconds: 1));
+
     try {
-      // Chờ các dữ liệu mới
-      List<MovieModel> movies = await MovieService.loadMovies();
-      List<MovieModel> hotMovies = await MovieService.loadHotMovies();
-      List<MovieModel> newMovies = await MovieService.loadNewMovies();
-      List<MovieModel> moviesByDay = await MovieService.loadMoviesByDay(
-        _selectedDay,
-      );
-
-      List<MovieModel> savedMovies = [];
-      if (loggedInUser != null) {
-        savedMovies = await MovieService.loadSavedMovies(loggedInUser!);
-      }
-
-      // Sau khi dữ liệu đã tải xong, cập nhật state
+      // Cập nhật dữ liệu đã tải vào các danh sách
       setState(() {
         _categoriesFuture = CategoryService.loadCategories();
-        _movies = movies;
-        _hotMovies = hotMovies;
-        _newMovies = newMovies;
-        _moviesByDay = moviesByDay;
-        _savedMovies = savedMovies;
+        _moviesFuture = MovieService.loadMovies();
+        _moviesByDayFuture = MovieService.loadMoviesByDay(_selectedDay);
+        _hotMoviesFuture = MovieService.loadHotMovies();
+        _newMoviesFuture = MovieService.loadNewMovies();
+
+        if (loggedInUser != null) {
+          _savedMoviesFuture = MovieService.loadSavedMovies(loggedInUser!);
+        }
 
         _isRefreshing = false; // Tắt trạng thái đang làm mới
       });
@@ -217,6 +196,7 @@ class HomeScreenState extends State<HomeScreen> {
       setState(() {
         _isRefreshing = false; // Tắt trạng thái làm mới nếu có lỗi
       });
+      // Thông báo lỗi hoặc xử lý lỗi tùy theo yêu cầu
       print("Error refreshing data: $e");
     }
   }
@@ -233,17 +213,15 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadSavedMovies(String userId) async {
-    List<MovieModel> savedMovies = await MovieService.loadSavedMovies(userId);
     setState(() {
-      _savedMovies = savedMovies;
+      _savedMoviesFuture = MovieService.loadSavedMovies(userId);
     });
   }
 
   void _updateMoviesByDay(int dayIndex) async {
-    List<MovieModel> moviesByDay = await MovieService.loadMoviesByDay(dayIndex);
     setState(() {
       _selectedDay = dayIndex;
-      _moviesByDay = moviesByDay;
+      _moviesByDayFuture = MovieService.loadMoviesByDay(dayIndex);
     });
   }
 
@@ -262,13 +240,30 @@ class HomeScreenState extends State<HomeScreen> {
                 // Danh sách phim chính
                 SliverPadding(
                   padding: const EdgeInsets.only(bottom: 8.0),
+                  // Thêm khoảng cách phía trên
                   sliver: SliverToBoxAdapter(
-                    child:
-                        _movies.isEmpty
-                            ? const Center(child: Text("Không có phim nào!"))
-                            : Column(
-                              children: [_buildFeaturedMoviesSlider(_movies)],
-                            ),
+                    child: FutureBuilder<List<MovieModel>>(
+                      future: _moviesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError ||
+                            !snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                            child: Text("Không có phim nào!"),
+                          );
+                        }
+                        return Column(
+                          children: [
+                            _buildFeaturedMoviesSlider(snapshot.data!),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
 
@@ -285,21 +280,24 @@ class HomeScreenState extends State<HomeScreen> {
                 // Danh sách phim khác
                 SliverToBoxAdapter(child: _buildWeekdayMovies()),
                 SliverToBoxAdapter(
-                  child: _buildMovies(
+                  child: _buildFutureMovieList(
                     "movies_by_day",
-                    _moviesByDay,
+                    _moviesByDayFuture,
                     isSmall: true,
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildMovies("hot_movies", _hotMovies),
+                  child: _buildFutureMovieList("hot_movies", _hotMoviesFuture),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildMovies("new_movies", _newMovies),
+                  child: _buildFutureMovieList("new_movies", _newMoviesFuture),
                 ),
                 if (loggedInUser != null)
                   SliverToBoxAdapter(
-                    child: _buildMovies("saved_movies", _savedMovies),
+                    child: _buildFutureMovieList(
+                      "saved_movies",
+                      _savedMoviesFuture,
+                    ),
                   ),
               ],
             ),
@@ -469,58 +467,138 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildWeekdayMovies() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double totalWidth = weekDays.length * 100.0; // Ước tính tổng chiều rộng
-        bool shouldCenter = totalWidth < constraints.maxWidth;
+  */
+/*Widget _buildCategorySelector() {
+    return SizedBox(
+      height: 40, // Điều chỉnh chiều cao để phù hợp với header
+      child: FutureBuilder<List<CategoryModel>>(
+        future: _categoriesFutureFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator(color: Colors.red));
+          } else if (snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                "Không có thể loại!",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Container(
-            width: shouldCenter ? constraints.maxWidth : null,
-            alignment: shouldCenter ? Alignment.center : Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              // Để Row chỉ chiếm đúng kích thước cần thiết
-              mainAxisAlignment:
-                  shouldCenter
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.start,
-              children: List.generate(weekDays.length, (index) {
-                return GestureDetector(
-                  onTap: () => _updateMoviesByDay(index),
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 10,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          _selectedDay == index
-                              ? Colors.redAccent
-                              : Colors.grey,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Text(
-                      weekDays[index],
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                );
-              }),
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              double totalWidth =
+                  snapshot.data!.length * 120.0; // Ước tính chiều rộng tổng
+              bool shouldCenter =
+                  totalWidth <
+                  constraints.maxWidth; // Kiểm tra có cần căn giữa không
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment:
+                      shouldCenter
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                  children:
+                      snapshot.data!.map((category) {
+                        return GestureDetector(
+                          onTap: () {
+                            context.go('/movie/category/${category.id}');
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Colors.redAccent,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.redAccent.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              category.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }*//*
+
+
+  Widget _buildWeekdayMovies() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(weekDays.length, (index) {
+          return GestureDetector(
+            onTap: () => _updateMoviesByDay(index),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: BoxDecoration(
+                color: _selectedDay == index ? Colors.redAccent : Colors.grey,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(
+                weekDays[index],
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ),
-          ),
-        );
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildFutureMovieList(
+    String keyTitle,
+    Future<List<MovieModel>> futureMovies, {
+    bool isSmall = false,
+  }) {
+    return FutureBuilder<List<MovieModel>>(
+      future: futureMovies,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError ||
+            !snapshot.hasData ||
+            snapshot.data!.isEmpty) {
+          return const Center(child: Text("Không có phim nào!"));
+        }
+        return _buildMovieList(keyTitle, snapshot.data!, isSmall);
       },
     );
   }
 
-  Widget _buildMovies(
+  */
+/*Widget _buildMovies(
     String keyTitle,
     List<MovieModel> movies, {
     bool isSmall = false,
@@ -528,8 +606,11 @@ class HomeScreenState extends State<HomeScreen> {
     if (movies.isEmpty) {
       return const Center(child: Text("Không có phim nào!"));
     }
-    return _buildMovieList(keyTitle, movies, isSmall);
-  }
+    return SliverToBoxAdapter(
+      child: _buildMovieList(keyTitle, movies, isSmall),
+    );
+  }*//*
+
 
   Widget _buildMovieList(
     String keyTitle,
@@ -715,3 +796,4 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
     return false;
   }
 }
+*/

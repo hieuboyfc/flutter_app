@@ -5,7 +5,11 @@ class SearchPopup extends StatelessWidget {
   final List<MovieModel> searchResults;
   final VoidCallback onClose;
 
-  const SearchPopup({super.key, required this.searchResults, required this.onClose});
+  const SearchPopup({
+    super.key,
+    required this.searchResults,
+    required this.onClose,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,7 @@ class SearchPopup extends StatelessWidget {
           top: 60, // Không che header
           child: GestureDetector(
             onTap: onClose,
-            child: Container(color: Colors.black.withOpacity(0.3)),
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
           ),
         ),
 
@@ -34,7 +38,7 @@ class SearchPopup extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -57,8 +61,15 @@ class SearchPopup extends StatelessWidget {
                           return GestureDetector(
                             onTap: onClose,
                             child: ListTile(
-                              leading: Image.network(movie.image, width: 50, fit: BoxFit.cover),
-                              title: Text(movie.title, style: const TextStyle(color: Colors.white)),
+                              leading: Image.network(
+                                movie.image,
+                                width: 50,
+                                fit: BoxFit.cover,
+                              ),
+                              title: Text(
+                                movie.title,
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           );
                         }).toList(),

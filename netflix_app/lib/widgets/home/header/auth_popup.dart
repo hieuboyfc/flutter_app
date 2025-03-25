@@ -5,13 +5,18 @@ class AuthPopup extends StatefulWidget {
   final VoidCallback onClose;
   final Function(String username) onLoginSuccess;
 
-  const AuthPopup({super.key, required this.onClose, required this.onLoginSuccess});
+  const AuthPopup({
+    super.key,
+    required this.onClose,
+    required this.onLoginSuccess,
+  });
 
   @override
   _AuthPopupState createState() => _AuthPopupState();
 }
 
-class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMixin {
+class _AuthPopupState extends State<AuthPopup>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -31,7 +36,10 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _scaleAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _scaleAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
     _animationController.forward();
   }
 
@@ -63,7 +71,8 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
         result = await AuthService.register(username, password);
       }
 
-      if (result == "Đăng nhập thành công!" || result == "Đăng ký thành công!") {
+      if (result == "Đăng nhập thành công!" ||
+          result == "Đăng ký thành công!") {
         await AuthService.saveLoggedInUser(username);
         widget.onLoginSuccess(username);
 
@@ -90,7 +99,7 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
                 _animationController.reverse().then((_) => widget.onClose());
               }
             },
-            child: Container(color: Colors.black.withOpacity(0.5)),
+            child: Container(color: Colors.black.withValues(alpha: 0.5)),
           ),
         ),
         Center(
@@ -115,7 +124,11 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                           onTap: isLoading ? null : widget.onClose,
-                          child: const Icon(Icons.close, color: Colors.white, size: 24),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
 
@@ -130,16 +143,26 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
                       const SizedBox(height: 10),
                       TextFormField(
                         controller: usernameController,
-                        decoration: const InputDecoration(labelText: "Tên đăng nhập"),
-                        validator: (value) => value!.isEmpty ? "Vui lòng nhập tên đăng nhập" : null,
+                        decoration: const InputDecoration(
+                          labelText: "Tên đăng nhập",
+                        ),
+                        validator:
+                            (value) =>
+                                value!.isEmpty
+                                    ? "Vui lòng nhập tên đăng nhập"
+                                    : null,
                       ),
                       TextFormField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(labelText: "Mật khẩu"),
+                        decoration: const InputDecoration(
+                          labelText: "Mật khẩu",
+                        ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) return "Vui lòng nhập mật khẩu";
-                          if (value.length < 6) return "Mật khẩu phải có ít nhất 6 ký tự";
+                          if (value == null || value.isEmpty)
+                            return "Vui lòng nhập mật khẩu";
+                          if (value.length < 6)
+                            return "Mật khẩu phải có ít nhất 6 ký tự";
                           return null;
                         },
                       ),
@@ -147,14 +170,21 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
                         TextFormField(
                           controller: confirmPasswordController,
                           obscureText: true,
-                          decoration: const InputDecoration(labelText: "Xác nhận mật khẩu"),
+                          decoration: const InputDecoration(
+                            labelText: "Xác nhận mật khẩu",
+                          ),
                           validator:
                               (value) =>
-                                  value != passwordController.text ? "Mật khẩu không khớp" : null,
+                                  value != passwordController.text
+                                      ? "Mật khẩu không khớp"
+                                      : null,
                         ),
                       const SizedBox(height: 10),
                       if (errorMessage.isNotEmpty)
-                        Text(errorMessage, style: const TextStyle(color: Colors.red)),
+                        Text(
+                          errorMessage,
+                          style: const TextStyle(color: Colors.red),
+                        ),
                       const SizedBox(height: 10),
                       GestureDetector(
                         onTap: isLoading ? null : _handleAuth,
@@ -170,7 +200,7 @@ class _AuthPopupState extends State<AuthPopup> with SingleTickerProviderStateMix
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.redAccent.withOpacity(0.5),
+                                color: Colors.redAccent.withValues(alpha: 0.5),
                                 blurRadius: 10,
                                 spreadRadius: 1,
                                 offset: const Offset(0, 4),

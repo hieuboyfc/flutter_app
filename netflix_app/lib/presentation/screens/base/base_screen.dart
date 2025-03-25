@@ -18,10 +18,10 @@ class BaseScreen extends StatefulWidget {
   });
 
   @override
-  _BaseScreenState createState() => _BaseScreenState();
+  BaseScreenState createState() => BaseScreenState();
 }
 
-class _BaseScreenState extends State<BaseScreen> {
+class BaseScreenState extends State<BaseScreen> {
   int _selectedIndex = 0;
   OverlayEntry? _searchOverlay;
 
@@ -79,21 +79,42 @@ class _BaseScreenState extends State<BaseScreen> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.red.withOpacity(0.2) : Colors.transparent,
+          color: Colors.transparent, // Giữ màu nền của container ngoài
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedScale(
-              scale: isSelected ? 1.2 : 1.0,
+            // Container bao bọc icon, áp dụng lớp phủ màu đỏ khi được chọn
+            AnimatedContainer(
               duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              padding:
+                  isSelected
+                      ? EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 15,
+                        right: 15,
+                      )
+                      : EdgeInsets.all(0),
+              // Tạo không gian cho lớp phủ
+              decoration: BoxDecoration(
+                color:
+                    isSelected
+                        ? Colors.red.withValues(alpha: 0.2)
+                        : Colors.transparent,
+                borderRadius: BorderRadius.circular(
+                  10,
+                ), // Góc bo tròn phù hợp với icon
+              ),
               child: Icon(
                 isSelected ? selectedIcon : icon,
                 size: 30,
                 color: isSelected ? Colors.red : Colors.white,
               ),
             ),
+            // AnimatedOpacity cho text vẫn giữ nguyên
             AnimatedOpacity(
               duration: const Duration(milliseconds: 200),
               opacity: isSelected ? 1.0 : 0.0,
@@ -102,9 +123,9 @@ class _BaseScreenState extends State<BaseScreen> {
                 child: Text(
                   label,
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Colors.red, // Text màu đỏ khi chọn
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -138,7 +159,7 @@ class _BaseScreenState extends State<BaseScreen> {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.9),
+          color: Colors.black.withValues(alpha: 0.9),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -170,7 +191,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
     if (searchResults.isNotEmpty) {
       // Insert the new overlay if there are search results
-      OverlayState overlayState = Overlay.of(context)!;
+      OverlayState overlayState = Overlay.of(context);
       _searchOverlay = OverlayEntry(
         builder:
             (context) => SearchPopup(
