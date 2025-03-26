@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:netflix_app/presentation/screens/base/base_screen.dart';
 import 'package:netflix_app/presentation/screens/base/error_screen.dart';
-import 'package:netflix_app/presentation/screens/home/home_screen.dart';
+import 'package:netflix_app/presentation/screens/home/home_screen_v2.dart';
 import 'package:netflix_app/presentation/screens/home/movie_category_screen.dart';
 import 'package:netflix_app/presentation/screens/home/movie_type_screen.dart';
 import 'package:netflix_app/presentation/screens/profile/profile_screen.dart';

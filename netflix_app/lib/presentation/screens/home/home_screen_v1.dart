@@ -7,6 +7,7 @@ import 'package:netflix_app/data/services/auth_service.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
 import 'package:netflix_app/utils/utils.dart';
+import 'package:netflix_app/widgets/custom/sticky_header_delegate.dart';
 
 import '../../screens/base/base_screen.dart';
 
@@ -276,7 +277,7 @@ class HomeScreenState extends State<HomeScreen> {
                 SliverPersistentHeader(
                   pinned: true, // Giữ cố định khi cuộn
                   floating: false,
-                  delegate: _StickyHeaderDelegate(
+                  delegate: StickyHeaderDelegate(
                     child: _buildCategorySelector(),
                     height: 50.0, // Chiều cao của header
                   ),
@@ -680,38 +681,5 @@ class HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
-  }
-}
-
-// Tạo Delegate cho SliverPersistentHeader
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final double height;
-
-  _StickyHeaderDelegate({required this.child, required this.height});
-
-  @override
-  double get minExtent => height;
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      height: height,
-      color: Colors.black,
-      padding: EdgeInsets.symmetric(vertical: 5), // Điều chỉnh padding nếu cần
-      child: Center(child: child), // Đảm bảo căn giữa nội dung
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
   }
 }

@@ -33,15 +33,32 @@ class MovieService {
     int dayIndex, {
     int page = 1,
   }) async {
-    List<MovieModel> movies = await MovieService.loadAllMovies();
-    movies = movies.where((item) => item.weekDay == dayIndex).toList();
+    final List<MovieModel> movies = await MovieService.loadAllMovies();
+    // Lọc các phim theo ngày
+    List<MovieModel> filterMovies =
+        movies.where((item) => item.weekDay == dayIndex).toList();
 
+    // Kiểm tra xem có phim nào không
+    if (filterMovies.isEmpty) {
+      return []; // Trả về danh sách trống nếu không có phim nào
+    }
+
+    // Tính toán chỉ số bắt đầu và kết thúc của phần trang
     final startIndex = (page - 1) * _pageSize;
     final endIndex = startIndex + _pageSize;
-    final paginatedMovies = movies.sublist(
-      startIndex,
-      endIndex <= movies.length ? endIndex : movies.length,
-    );
+
+    // Kiểm tra nếu startIndex đã vượt quá số lượng phim
+    if (startIndex >= filterMovies.length) {
+      print("---> loadMoviesByDay ---> startIndex: $startIndex");
+      return []; // Trả về danh sách trống nếu startIndex vượt quá số lượng phim
+    }
+
+    // Điều chỉnh endIndex để không vượt quá độ dài của danh sách phim
+    final finalEndIndex =
+        endIndex > filterMovies.length ? filterMovies.length : endIndex;
+
+    // Cắt danh sách phim từ startIndex đến finalEndIndex
+    final paginatedMovies = filterMovies.sublist(startIndex, finalEndIndex);
 
     return paginatedMovies.toList();
   }
