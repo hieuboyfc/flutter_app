@@ -7,6 +7,7 @@ import 'package:netflix_app/data/services/auth_service.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
 import 'package:netflix_app/utils/utils.dart';
+import 'package:netflix_app/widgets/custom/marquee_text.dart';
 import 'package:netflix_app/widgets/custom/sticky_header_delegate.dart';
 
 import '../../screens/base/base_screen.dart';
@@ -26,6 +27,7 @@ class HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
 
   Map<String, bool> isRefreshingMap = {
+    "movies_by_day": false,
     "hot_movies": false,
     "new_movies": false,
     "saved_movies": false,
@@ -53,29 +55,27 @@ class HomeScreenState extends State<HomeScreen> {
     _categoriesFuture = CategoryService.loadCategories();
     _moviesFuture = MovieService.loadMovies();
 
-    _loadData();
+    _initData();
     _initScrollControllers();
     _initPaginationState();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _initData() async {
     // Chờ các dữ liệu mới
-    List<MovieModel> _moviesByDay = await MovieService.loadMoviesByDay(
-      _selectedDay,
-    );
-    List<MovieModel> _hotMovies = await MovieService.loadHotMovies();
-    List<MovieModel> _newMovies = await MovieService.loadNewMovies();
+    var fetchMoviesByDay = await MovieService.loadMoviesByDay(_selectedDay);
+    var fetchHotMovies = await MovieService.loadHotMovies();
+    var fetchNewMovies = await MovieService.loadNewMovies();
 
-    List<MovieModel> _savedMovies = [];
-    if (loggedInUser != null) {
-      savedMovies = await MovieService.loadSavedMovies(loggedInUser!);
-    }
+    List<MovieModel> fetchSavedMovies =
+        loggedInUser != null
+            ? await MovieService.loadSavedMovies(loggedInUser!)
+            : [];
 
     setState(() {
-      moviesByDay = _moviesByDay;
-      hotMovies = _hotMovies;
-      newMovies = _newMovies;
-      savedMovies = _savedMovies;
+      moviesByDay = fetchMoviesByDay;
+      hotMovies = fetchHotMovies;
+      newMovies = fetchNewMovies;
+      savedMovies = fetchSavedMovies;
     });
   }
 
@@ -89,6 +89,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _initScrollControllers() {
     List<String> movieByKeyTitles = [
+      "movies_by_day",
       "hot_movies",
       "new_movies",
       "saved_movies",
@@ -109,6 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _initPaginationState() {
     List<String> movieByKeyTitles = [
+      "movies_by_day",
       "hot_movies",
       "new_movies",
       "saved_movies",
@@ -127,30 +129,46 @@ class HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Cập nhật trạng thái đang tải dữ liệu
     setState(() {
       _isLoadingMore[keyTitle] = true;
     });
 
     int newPage = _currentPage[keyTitle]! + 1;
-
-    late Future<List<MovieModel>> newMoviesFuture;
+    late Future<List<MovieModel>> moviesFuture;
 
     try {
-      if (keyTitle == "hot_movies") {
-        newMoviesFuture = MovieService.loadHotMovies(page: newPage);
-      } else if (keyTitle == "new_movies") {
-        newMoviesFuture = MovieService.loadNewMovies(page: newPage);
-      } else if (keyTitle == "saved_movies" && loggedInUser != null) {
-        newMoviesFuture = MovieService.loadSavedMovies(
-          loggedInUser!,
-          page: newPage,
-        );
+      switch (keyTitle) {
+        case "movies_by_day":
+          moviesFuture = MovieService.loadMoviesByDay(
+            _selectedDay,
+            page: newPage,
+          );
+          break;
+        case "hot_movies":
+          moviesFuture = MovieService.loadHotMovies(page: newPage);
+          break;
+        case "new_movies":
+          moviesFuture = MovieService.loadNewMovies(page: newPage);
+          break;
+        case "saved_movies":
+          if (loggedInUser != null) {
+            moviesFuture = MovieService.loadSavedMovies(
+              loggedInUser!,
+              page: newPage,
+            );
+          } else {
+            print("Tránh việc gọi API nếu chưa có người dùng đăng nhập");
+            return;
+          }
+          break;
+        default:
+          print("Trường hợp không hợp lệ");
+          return;
       }
 
-      List<MovieModel> getNewMovies = await newMoviesFuture;
+      List<MovieModel> fetchMovies = await moviesFuture;
 
-      if (getNewMovies.isEmpty) {
+      if (fetchMovies.isEmpty) {
         setState(() {
           _isLoadingMore[keyTitle] = false;
         });
@@ -160,12 +178,21 @@ class HomeScreenState extends State<HomeScreen> {
       }
 
       setState(() {
-        if (keyTitle == "hot_movies") {
-          hotMovies.addAll(getNewMovies);
-        } else if (keyTitle == "new_movies") {
-          newMovies.addAll(getNewMovies);
-        } else if (keyTitle == "saved_movies" && loggedInUser != null) {
-          savedMovies.addAll(getNewMovies);
+        switch (keyTitle) {
+          case "movies_by_day":
+            moviesByDay.addAll(fetchMovies);
+            break;
+          case "hot_movies":
+            hotMovies.addAll(fetchMovies);
+            break;
+          case "new_movies":
+            newMovies.addAll(fetchMovies);
+            break;
+          case "saved_movies":
+            if (loggedInUser != null) {
+              savedMovies.addAll(fetchMovies);
+            }
+            break;
         }
 
         _currentPage[keyTitle] = newPage;
@@ -191,7 +218,7 @@ class HomeScreenState extends State<HomeScreen> {
         _categoriesFuture = CategoryService.loadCategories();
         _moviesFuture = MovieService.loadMovies();
 
-        _loadData();
+        _initData();
         _isRefreshing = false;
       });
     } catch (e) {
@@ -214,9 +241,9 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadSavedMovies(String userId) async {
-    List<MovieModel> _savedMovies = await MovieService.loadSavedMovies(userId);
+    var fetchSavedMovies = await MovieService.loadSavedMovies(userId);
     setState(() {
-      savedMovies = _savedMovies;
+      savedMovies = fetchSavedMovies;
     });
   }
 
@@ -226,28 +253,29 @@ class HomeScreenState extends State<HomeScreen> {
     if (_isLoading) return;
 
     setState(() {
+      moviesByDay = [];
       _isLoading = true;
       _selectedDay = dayIndex;
     });
 
     try {
-      var newMovies = await MovieService.loadMoviesByDay(dayIndex);
+      var fetchMovies = await MovieService.loadMoviesByDay(dayIndex);
 
-      if (newMovies.isNotEmpty) {
+      if (fetchMovies.isNotEmpty) {
         await Future.delayed(Duration(milliseconds: 300));
       }
 
-      setState(() {
-        moviesByDay = newMovies;
-        _isLoading = false;
-      });
-
       // Cuộn về đầu nếu có dữ liệu
-      if (newMovies.isNotEmpty &&
+      if (fetchMovies.isNotEmpty &&
           _scrollControllers[keyTitle]?.hasClients == true) {
         // Đảm bảo chỉ cuộn sau khi dữ liệu đã được tải xong
         _scrollControllers[keyTitle]?.jumpTo(0); // Cuộn về đầu
       }
+
+      setState(() {
+        moviesByDay = fetchMovies;
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -307,6 +335,9 @@ class HomeScreenState extends State<HomeScreen> {
                     height: 50.0, // Chiều cao của header
                   ),
                 ),
+
+                // Chào mừng
+                SliverToBoxAdapter(child: _buildWelcomeMovies()),
 
                 // Danh sách phim khác theo ngày
                 SliverToBoxAdapter(child: _buildWeekdayMovies()),
@@ -501,6 +532,26 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildWelcomeMovies() {
+    return MarqueeText(
+      text:
+          "Chào mừng bạn đến với ứng dụng xem phim Netflix, hãy click vào quảng cáo để giúp ứng dụng phát triển hơn nhé <3.",
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        letterSpacing: 1.5,
+        shadows: [
+          Shadow(
+            blurRadius: 4.0,
+            color: Colors.black.withValues(alpha: 0.6),
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildWeekdayMovies() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -656,10 +707,6 @@ class HomeScreenState extends State<HomeScreen> {
     bool isLoading = false,
   }) {
     String title = getTitleFromKey(keyTitle);
-    if (movies.isEmpty) {
-      return const Center(child: Text("Không có phim nào!"));
-    }
-
     // Nếu có dữ liệu, hiển thị phim
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -729,10 +776,10 @@ class HomeScreenState extends State<HomeScreen> {
     bool isLoading,
   ) {
     // Chỉ cuộn khi có dữ liệu và scrollController đã được gán
-    if (movies.isNotEmpty && _scrollControllers[keyTitle]?.hasClients == true) {
+    /*if (movies.isNotEmpty && _scrollControllers[keyTitle]?.hasClients == true) {
       // Kiểm tra nếu scrollController đã được gán và có clients
       _scrollControllers[keyTitle]?.jumpTo(0); // Cuộn về đầu
-    }
+    }*/
 
     return SizedBox(
       height: 180,
@@ -825,10 +872,8 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFutureMovieList(
-    String keyTitle,
-    Future<List<MovieModel>> futureMovies,
-  ) {
+  /*Widget _buildFutureMovieList(String keyTitle,
+      Future<List<MovieModel>> futureMovies,) {
     return FutureBuilder<List<MovieModel>>(
       future: futureMovies,
       builder: (context, snapshot) {
@@ -842,7 +887,7 @@ class HomeScreenState extends State<HomeScreen> {
         return _buildMovieList(keyTitle, snapshot.data!);
       },
     );
-  }
+  }*/
 
   Widget _buildMovieList(String keyTitle, List<MovieModel> movies) {
     String title = getTitleFromKey(keyTitle);
