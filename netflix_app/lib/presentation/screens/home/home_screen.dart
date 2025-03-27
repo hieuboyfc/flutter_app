@@ -704,63 +704,69 @@ class HomeScreenState extends State<HomeScreen> {
             return Center();
           }
           final movie = movies[index];
-          return Container(
-            width: 150,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        movie.title,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+
+          return GestureDetector(
+            onTap: () {
+              context.go('/movie/detail/${movie.id}');
+            },
+            child: Container(
+              width: 150,
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          movie.title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Tập: ${movie.episodes}',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          ),
-                          Row(
-                            children: List.generate(5, (starIndex) {
-                              if (starIndex < movie.rating.floor()) {
-                                return Icon(Icons.star, size: 14, color: Colors.yellow);
-                              } else if (starIndex == movie.rating.floor() &&
-                                  movie.rating % 1 >= 0.5) {
-                                return Icon(Icons.star_half, size: 14, color: Colors.yellow);
-                              } else {
-                                return Icon(Icons.star_border, size: 14, color: Colors.yellow);
-                              }
-                            }),
-                          ),
-                        ],
-                      ),
-                    ],
+                        SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Tập: ${movie.episodes}',
+                              style: TextStyle(fontSize: 12, color: Colors.white),
+                            ),
+                            Row(
+                              children: List.generate(5, (starIndex) {
+                                if (starIndex < movie.rating.floor()) {
+                                  return Icon(Icons.star, size: 14, color: Colors.yellow);
+                                } else if (starIndex == movie.rating.floor() &&
+                                    movie.rating % 1 >= 0.5) {
+                                  return Icon(Icons.star_half, size: 14, color: Colors.yellow);
+                                } else {
+                                  return Icon(Icons.star_border, size: 14, color: Colors.yellow);
+                                }
+                              }),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

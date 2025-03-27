@@ -9,6 +9,12 @@ class MovieModel {
   final bool isHot;
   final bool isNew;
   final bool isWatched;
+  final List<String> genres;
+  final List<String> actors;
+  final String releaseDate;
+  final int voteCount;
+  final String overview;
+  final String posterPath;
 
   MovieModel({
     required this.id,
@@ -18,9 +24,15 @@ class MovieModel {
     required this.rating,
     required this.weekDay,
     required this.categoryId,
-    this.isHot = false, // Mặc định là false
-    this.isNew = false, // Mặc định là false
-    this.isWatched = false, // Mặc định là false,
+    this.isHot = false,
+    this.isNew = false,
+    this.isWatched = false,
+    required this.genres,
+    required this.actors,
+    required this.releaseDate,
+    required this.voteCount,
+    required this.overview,
+    required this.posterPath,
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
@@ -35,10 +47,15 @@ class MovieModel {
       isHot: json['isHot'] ?? false,
       isNew: json['isNew'] ?? false,
       isWatched: json['isWatched'] ?? false,
+      genres: List<String>.from(json['genres'] ?? []),
+      actors: List<String>.from(json['actors'] ?? []),
+      releaseDate: json['releaseDate'] ?? 'N/A',
+      voteCount: json['voteCount'] ?? 0,
+      overview: json['overview'] ?? '',
+      posterPath: json['posterPath'] ?? '',
     );
   }
 
-  // Chuyển đổi đối tượng MovieModel thành JSON để lưu trữ hoặc gửi tới API
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -51,6 +68,12 @@ class MovieModel {
       'isHot': isHot,
       'isNew': isNew,
       'isWatched': isWatched,
+      'genres': genres,
+      'actors': actors,
+      'releaseDate': releaseDate,
+      'voteCount': voteCount,
+      'overview': overview,
+      'posterPath': posterPath,
     };
   }
 }

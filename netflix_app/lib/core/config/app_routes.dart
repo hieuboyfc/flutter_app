@@ -3,8 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:netflix_app/presentation/screens/base/base_screen.dart';
 import 'package:netflix_app/presentation/screens/base/error_screen.dart';
 import 'package:netflix_app/presentation/screens/home/home_screen.dart';
-import 'package:netflix_app/presentation/screens/home/movie_category_screen.dart';
-import 'package:netflix_app/presentation/screens/home/movie_type_screen.dart';
+import 'package:netflix_app/presentation/screens/movie/movie_category_screen.dart';
+import 'package:netflix_app/presentation/screens/movie/movie_detail_screen.dart';
+import 'package:netflix_app/presentation/screens/movie/movie_type_screen.dart';
 import 'package:netflix_app/presentation/screens/profile/profile_screen.dart';
 import 'package:netflix_app/presentation/screens/splash/splash_screen.dart';
 
@@ -29,6 +30,17 @@ final GoRouter appRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final code = state.pathParameters['code']!;
         return BaseScreen(initialIndex: 0, showHeader: true, body: MovieTypeScreen(code: code));
+      },
+    ),
+    GoRoute(
+      path: '/movie/detail/:movieId',
+      builder: (BuildContext context, GoRouterState state) {
+        final movieId = int.parse(state.pathParameters['movieId']!);
+        return BaseScreen(
+          initialIndex: 0,
+          showHeader: true,
+          body: MovieDetailScreen(movieId: movieId),
+        );
       },
     ),
     GoRoute(

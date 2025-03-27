@@ -6,9 +6,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 2,
+    "categoryId": 3,
     "isHot": true,
     "isNew": false,
-    "categoryId": 3
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "actors": [
+      "Sam Worthington",
+      "Zoe Saldana",
+      "Sigourney Weaver"
+    ],
+    "releaseDate": "2022-12-16",
+    "voteCount": 4000,
+    "overview": "Jake Sully lives with his newfound family formed on the planet of Pandora.",
+    "posterPath": "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
   },
   {
     "id": 2,
@@ -17,9 +32,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 1,
+    "categoryId": 4,
     "isHot": false,
     "isNew": true,
-    "categoryId": 4
+    "isWatched": false,
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "actors": [
+      "Cillian Murphy",
+      "Emily Blunt",
+      "Matt Damon"
+    ],
+    "releaseDate": "2023-07-21",
+    "voteCount": 2500,
+    "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb.",
+    "posterPath": "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
   },
   {
     "id": 3,
@@ -28,9 +58,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 0,
+    "categoryId": 1,
     "isHot": true,
     "isNew": false,
-    "categoryId": 1
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "actors": [
+      "Keanu Reeves",
+      "Laurence Fishburne",
+      "Halle Berry"
+    ],
+    "releaseDate": "2023-03-24",
+    "voteCount": 3500,
+    "overview": "John Wick takes his fight against the High Table to new heights.",
+    "posterPath": "/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg"
   },
   {
     "id": 4,
@@ -39,9 +84,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 1,
+    "categoryId": 7,
     "isHot": false,
     "isNew": true,
-    "categoryId": 7
+    "isWatched": false,
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "actors": [
+      "Shameik Moore",
+      "Hailee Steinfeld",
+      "Oscar Isaac"
+    ],
+    "releaseDate": "2023-06-02",
+    "voteCount": 5000,
+    "overview": "Miles Morales embarks on an adventure across the multiverse.",
+    "posterPath": "/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"
   },
   {
     "id": 5,
@@ -50,9 +110,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 4,
+    "categoryId": 7,
     "isHot": true,
     "isNew": false,
-    "categoryId": 7
+    "isWatched": false,
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "actors": [
+      "Chris Pratt",
+      "Anya Taylor-Joy",
+      "Jack Black"
+    ],
+    "releaseDate": "2023-04-07",
+    "voteCount": 3200,
+    "overview": "Mario and Luigi are transported to the Mushroom Kingdom and must save Princess Peach from Bowser.",
+    "posterPath": "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg"
   },
   {
     "id": 6,
@@ -61,9 +136,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 3,
+    "categoryId": 3,
     "isHot": false,
     "isNew": true,
-    "categoryId": 3
+    "isWatched": false,
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "actors": [
+      "Timothée Chalamet",
+      "Zendaya",
+      "Rebecca Ferguson"
+    ],
+    "releaseDate": "2024-11-15",
+    "voteCount": 1800,
+    "overview": "Paul Atreides continues his journey on the desert planet Arrakis.",
+    "posterPath": "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg"
   },
   {
     "id": 7,
@@ -72,9 +162,24 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 2,
+    "categoryId": 1,
     "isHot": true,
     "isNew": false,
-    "categoryId": 1
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Thriller"
+    ],
+    "actors": [
+      "Tom Cruise",
+      "Hayley Atwell",
+      "Ving Rhames"
+    ],
+    "releaseDate": "2023-07-14",
+    "voteCount": 4000,
+    "overview": "Ethan Hunt and his team must track down a terrifying new weapon.",
+    "posterPath": "/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
   },
   {
     "id": 8,
@@ -83,250 +188,333 @@
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 4,
+    "categoryId": 7,
     "isHot": false,
     "isNew": true,
-    "categoryId": 7
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "actors": [
+      "Chris Pratt",
+      "Zoe Saldana",
+      "Dave Bautista"
+    ],
+    "releaseDate": "2023-05-05",
+    "voteCount": 4400,
+    "overview": "The Guardians must fight to save Rocket from a high-tech villain.",
+    "posterPath": "/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg"
   },
   {
     "id": 9,
-    "title": "Fast X",
-    "image": "https://image.tmdb.org/t/p/w500/fiVW06jE7z9YnO4trhaMEdclSiC.jpg",
+    "title": "The Flash",
+    "image": "https://image.tmdb.org/t/p/w500/4IaNd2fsu1ypgyZ65g2bOUq7ap1.jpg",
     "episodes": 1,
-    "rating": 8.0,
-    "weekDay": 5,
+    "rating": 7.0,
+    "weekDay": 6,
+    "categoryId": 1,
     "isHot": true,
     "isNew": false,
-    "categoryId": 1
+    "isWatched": true,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "actors": [
+      "Ezra Miller",
+      "Michael Keaton",
+      "Ben Affleck"
+    ],
+    "releaseDate": "2023-06-16",
+    "voteCount": 1500,
+    "overview": "Barry Allen travels back in time to prevent his mother's death.",
+    "posterPath": "/4IaNd2fsu1ypgyZ65g2bOUq7ap1.jpg"
   },
   {
     "id": 10,
-    "title": "The Marvels",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "Barbie",
+    "image": "https://image.tmdb.org/t/p/w500/xqfXuX8zJbQTT9D9npkCeLf8h39.jpg",
     "episodes": 1,
-    "rating": 8.0,
-    "weekDay": 1,
-    "isHot": false,
+    "rating": 7.0,
+    "weekDay": 5,
+    "categoryId": 6,
+    "isHot": true,
     "isNew": true,
-    "categoryId": 3
+    "isWatched": false,
+    "genres": [
+      "Comedy",
+      "Fantasy",
+      "Romance"
+    ],
+    "actors": [
+      "Margot Robbie",
+      "Ryan Gosling",
+      "Will Ferrell"
+    ],
+    "releaseDate": "2023-07-21",
+    "voteCount": 3000,
+    "overview": "Barbie sets off on an adventure in the real world.",
+    "posterPath": "/xqfXuX8zJbQTT9D9npkCeLf8h39.jpg"
   },
   {
     "id": 11,
-    "title": "The Batman",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "Transformers: Rise of the Beasts",
+    "image": "https://image.tmdb.org/t/p/w500/o9hH8Ex9V06Hk3nmrhxDltDPsAe.jpg",
     "episodes": 1,
-    "rating": 8.3,
-    "weekDay": 3,
+    "rating": 7.0,
+    "weekDay": 0,
+    "categoryId": 1,
     "isHot": true,
-    "isNew": false,
-    "categoryId": 1
+    "isNew": true,
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "actors": [
+      "Anthony Ramos",
+      "Dominique Fishback",
+      "Peter Cullen"
+    ],
+    "releaseDate": "2023-06-09",
+    "voteCount": 1800,
+    "overview": "The Autobots and Maximals face off against the terror of Unicron.",
+    "posterPath": "/o9hH8Ex9V06Hk3nmrhxDltDPsAe.jpg"
   },
   {
     "id": 12,
-    "title": "Jurassic World: Dominion",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "Indiana Jones and the Dial of Destiny",
+    "image": "https://image.tmdb.org/t/p/w500/k9GmNh53XZZFvlxfRqlOwGjpFhK.jpg",
     "episodes": 1,
-    "rating": 6.5,
-    "weekDay": 4,
-    "isHot": false,
-    "isNew": true,
-    "categoryId": 1
+    "rating": 7.0,
+    "weekDay": 3,
+    "categoryId": 1,
+    "isHot": true,
+    "isNew": false,
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure"
+    ],
+    "actors": [
+      "Harrison Ford",
+      "Phoebe Waller-Bridge",
+      "Mads Mikkelsen"
+    ],
+    "releaseDate": "2023-06-30",
+    "voteCount": 2200,
+    "overview": "Indiana Jones faces one last adventure involving a legendary artifact.",
+    "posterPath": "/k9GmNh53XZZFvlxfRqlOwGjpFhK.jpg"
   },
   {
     "id": 13,
-    "title": "Black Panther: Wakanda Forever",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Little Mermaid",
+    "image": "https://image.tmdb.org/t/p/w500/x5jtGGKiTjkP3kNJtdF9mxLv5Pz.jpg",
     "episodes": 1,
-    "rating": 7.3,
+    "rating": 7.0,
     "weekDay": 5,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 4
+    "categoryId": 7,
+    "isHot": false,
+    "isNew": true,
+    "isWatched": false,
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "actors": [
+      "Halle Bailey",
+      "Jonah Hauer-King",
+      "Melissa McCarthy"
+    ],
+    "releaseDate": "2023-05-26",
+    "voteCount": 2400,
+    "overview": "A young mermaid makes a dangerous deal with a sea witch to become human.",
+    "posterPath": "/x5jtGGKiTjkP3kNJtdF9mxLv5Pz.jpg"
   },
   {
     "id": 14,
-    "title": "Avatar",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Hunger Games: The Ballad of Songbirds and Snakes",
+    "image": "https://image.tmdb.org/t/p/w500/4Zt6qz2l8Wlcm6DL5frQ7g3FC8g.jpg",
     "episodes": 1,
-    "rating": 7.8,
-    "weekDay": 6,
-    "isHot": false,
+    "rating": 7.5,
+    "weekDay": 0,
+    "categoryId": 4,
+    "isHot": true,
     "isNew": true,
-    "categoryId": 3
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "actors": [
+      "Rachel Zegler",
+      "Tom Blyth",
+      "Hunter Schafer"
+    ],
+    "releaseDate": "2023-11-17",
+    "voteCount": 2200,
+    "overview": "The origin story of Coriolanus Snow, the future President of Panem.",
+    "posterPath": "/4Zt6qz2l8Wlcm6DL5frQ7g3FC8g.jpg"
   },
   {
     "id": 15,
-    "title": "The Flash",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Marvels",
+    "image": "https://image.tmdb.org/t/p/w500/mZGG0v7ZtD1lu3BaXlt99yHzYrx.jpg",
     "episodes": 1,
-    "rating": 6.7,
-    "weekDay": 2,
+    "rating": 7.0,
+    "weekDay": 6,
+    "categoryId": 1,
     "isHot": true,
-    "isNew": false,
-    "categoryId": 7
+    "isNew": true,
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "actors": [
+      "Brie Larson",
+      "Teyonah Parris",
+      "Iman Vellani"
+    ],
+    "releaseDate": "2023-11-10",
+    "voteCount": 1500,
+    "overview": "Carol Danvers teams up with Monica Rambeau and Kamala Khan to battle a new threat.",
+    "posterPath": "/mZGG0v7ZtD1lu3BaXlt99yHzYrx.jpg"
   },
   {
     "id": 16,
-    "title": "Shazam! Fury of the Gods",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "Wonka",
+    "image": "https://image.tmdb.org/t/p/w500/1hNqIq4ZQ0Jp4F6p8pGnLw7Kw0P.jpg",
     "episodes": 1,
-    "rating": 6.3,
-    "weekDay": 0,
+    "rating": 7.0,
+    "weekDay": 4,
+    "categoryId": 5,
     "isHot": false,
     "isNew": true,
-    "categoryId": 1
+    "isWatched": false,
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "actors": [
+      "Timothée Chalamet",
+      "Olivia Colman",
+      "Keegan-Michael Key"
+    ],
+    "releaseDate": "2023-12-15",
+    "voteCount": 1300,
+    "overview": "A young Willy Wonka embarks on a journey to become the famous chocolatier.",
+    "posterPath": "/1hNqIq4ZQ0Jp4F6p8pGnLw7Kw0P.jpg"
   },
   {
     "id": 17,
-    "title": "Mission: Impossible - Fallout",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "Napoleon",
+    "image": "https://image.tmdb.org/t/p/w500/cXsbltiayitOCEtn6H9VWh8y3wH.jpg",
     "episodes": 1,
-    "rating": 7.8,
-    "weekDay": 4,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 4
+    "rating": 8.0,
+    "weekDay": 2,
+    "categoryId": 4,
+    "isHot": false,
+    "isNew": true,
+    "isWatched": false,
+    "genres": [
+      "Drama",
+      "History"
+    ],
+    "actors": [
+      "Joaquin Phoenix",
+      "Vanessa Kirby",
+      "Mark Strong"
+    ],
+    "releaseDate": "2023-11-22",
+    "voteCount": 1600,
+    "overview": "The life of Napoleon Bonaparte, exploring his rise to power.",
+    "posterPath": "/cXsbltiayitOCEtn6H9VWh8y3wH.jpg"
   },
   {
     "id": 18,
-    "title": "Spider-Man: No Way Home",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Equalizer 3",
+    "image": "https://image.tmdb.org/t/p/w500/bhxrN2UwbEB8G0vv49HZDJhPzgj.jpg",
     "episodes": 1,
-    "rating": 8.3,
-    "weekDay": 3,
+    "rating": 7.5,
+    "weekDay": 1,
+    "categoryId": 1,
     "isHot": true,
     "isNew": false,
-    "categoryId": 7
+    "isWatched": false,
+    "genres": [
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "actors": [
+      "Denzel Washington",
+      "Dakota Fanning",
+      "David Denman"
+    ],
+    "releaseDate": "2023-09-01",
+    "voteCount": 2200,
+    "overview": "Robert McCall returns for one final mission to protect the powerless.",
+    "posterPath": "/bhxrN2UwbEB8G0vv49HZDJhPzgj.jpg"
   },
   {
     "id": 19,
-    "title": "Thor: Love and Thunder",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Nun II",
+    "image": "https://image.tmdb.org/t/p/w500/yF3qGlhsoSjpq58NnmL6D8tPjjf.jpg",
     "episodes": 1,
-    "rating": 6.9,
-    "weekDay": 6,
+    "rating": 7.0,
+    "weekDay": 4,
+    "categoryId": 2,
     "isHot": false,
     "isNew": true,
-    "categoryId": 1
+    "isWatched": false,
+    "genres": [
+      "Horror",
+      "Mystery",
+      "Thriller"
+    ],
+    "actors": [
+      "Taissa Farmiga",
+      "Storm Reid",
+      "Anna Popplewell"
+    ],
+    "releaseDate": "2023-09-08",
+    "voteCount": 2100,
+    "overview": "A young nun is being terrorized by a dark presence in a convent.",
+    "posterPath": "/yF3qGlhsoSjpq58NnmL6D8tPjjf.jpg"
   },
   {
     "id": 20,
-    "title": "Guardians of the Galaxy Vol. 2",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
+    "title": "The Equalizer",
+    "image": "https://image.tmdb.org/t/p/w500/q77zYPf0eGfHbdk7WlbL6v7vTrH.jpg",
     "episodes": 1,
-    "rating": 7.6,
-    "weekDay": 5,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 7
-  },
-  {
-    "id": 21,
-    "title": "Deadpool 2",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 7.7,
-    "weekDay": 3,
-    "isHot": false,
-    "isNew": true,
-    "categoryId": 1
-  },
-  {
-    "id": 22,
-    "title": "Eternals",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 6.9,
-    "weekDay": 4,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 4
-  },
-  {
-    "id": 23,
-    "title": "Doctor Strange in the Multiverse of Madness",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 6.9,
+    "rating": 6.0,
     "weekDay": 2,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 3
-  },
-  {
-    "id": 24,
-    "title": "Ant-Man and the Wasp: Quantumania",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 6.5,
-    "weekDay": 5,
+    "categoryId": 1,
     "isHot": false,
-    "isNew": true,
-    "categoryId": 7
-  },
-  {
-    "id": 25,
-    "title": "Iron Man",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 7.9,
-    "weekDay": 6,
-    "isHot": true,
     "isNew": false,
-    "categoryId": 1
-  },
-  {
-    "id": 26,
-    "title": "The Suicide Squad",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 6.7,
-    "weekDay": 3,
-    "isHot": false,
-    "isNew": true,
-    "categoryId": 4
-  },
-  {
-    "id": 27,
-    "title": "A Quiet Place Part II",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 7.2,
-    "weekDay": 0,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 3
-  },
-  {
-    "id": 28,
-    "title": "Scream 5",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 6.7,
-    "weekDay": 2,
-    "isHot": false,
-    "isNew": true,
-    "categoryId": 1
-  },
-  {
-    "id": 29,
-    "title": "Tenet",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 7.4,
-    "weekDay": 4,
-    "isHot": true,
-    "isNew": false,
-    "categoryId": 7
-  },
-  {
-    "id": 30,
-    "title": "No Time to Die",
-    "image": "https://image.tmdb.org/t/p/w500/5kAGbi9MFAobQTVfK4kWPnIfnP0.jpg",
-    "episodes": 1,
-    "rating": 7.3,
-    "weekDay": 5,
-    "isHot": false,
-    "isNew": true,
-    "categoryId": 1
+    "isWatched": true,
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "actors": [
+      "Denzel Washington",
+      "Chloë Grace Moretz",
+      "David Harbour"
+    ],
+    "releaseDate": "2014-09-26",
+    "voteCount": 1500,
+    "overview": "A man with a mysterious past helps people in need using his unique skills.",
+    "posterPath": "/q77zYPf0eGfHbdk7WlbL6v7vTrH.jpg"
   }
 ]

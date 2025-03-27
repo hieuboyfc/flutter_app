@@ -29,14 +29,10 @@ class MovieService {
   }
 
   // Tương tự, giả lập lấy phim theo ngày hoặc các loại phim khác
-  static Future<List<MovieModel>> loadMoviesByDay(
-    int dayIndex, {
-    int page = 1,
-  }) async {
+  static Future<List<MovieModel>> loadMoviesByDay(int dayIndex, {int page = 1}) async {
     final List<MovieModel> movies = await MovieService.loadAllMovies();
     // Lọc các phim theo ngày
-    List<MovieModel> filterMovies =
-        movies.where((item) => item.weekDay == dayIndex).toList();
+    List<MovieModel> filterMovies = movies.where((item) => item.weekDay == dayIndex).toList();
 
     // Kiểm tra xem có phim nào không
     if (filterMovies.isEmpty) {
@@ -54,8 +50,7 @@ class MovieService {
     }
 
     // Điều chỉnh endIndex để không vượt quá độ dài của danh sách phim
-    final finalEndIndex =
-        endIndex > filterMovies.length ? filterMovies.length : endIndex;
+    final finalEndIndex = endIndex > filterMovies.length ? filterMovies.length : endIndex;
 
     // Cắt danh sách phim từ startIndex đến finalEndIndex
     final paginatedMovies = filterMovies.sublist(startIndex, finalEndIndex);
@@ -89,10 +84,7 @@ class MovieService {
     return paginatedMovies.toList();
   }
 
-  static Future<List<MovieModel>> loadSavedMovies(
-    String userId, {
-    int page = 1,
-  }) async {
+  static Future<List<MovieModel>> loadSavedMovies(String userId, {int page = 1}) async {
     final List<MovieModel> movies = await MovieService.loadAllMovies();
 
     final startIndex = (page - 1) * _pageSize;
@@ -110,15 +102,24 @@ class MovieService {
     if (_cachedMovies != null) return _cachedMovies!; // Dùng cache nếu có
 
     try {
-      final String response = await rootBundle.loadString(
-        'assets/json/movies.json',
-      );
+      final String response = await rootBundle.loadString('assets/json/movies.json');
       final List<dynamic> data = json.decode(response);
       _cachedMovies = data.map((json) => MovieModel.fromJson(json)).toList();
       return _cachedMovies!;
     } catch (e) {
       print("Lỗi khi tải phim: $e");
       return [];
+    }
+  }
+
+  static Future<MovieModel?> getById(int id) async {
+    try {
+      final List<MovieModel> movies = await MovieService.loadAllMovies();
+      MovieModel? movieModel = movies.firstWhere((movie) => movie.id == id);
+      return movieModel;
+    } catch (e) {
+      print("Lỗi khi tải phim: $e");
+      return null;
     }
   }
 
@@ -142,10 +143,7 @@ class MovieService {
       return [];
     }
 
-    return filteredMovies.sublist(
-      startIndex,
-      endIndex.clamp(0, filteredMovies.length),
-    );
+    return filteredMovies.sublist(startIndex, endIndex.clamp(0, filteredMovies.length));
   }
 
   // Hàm tải danh sách phim theo thể loại với phân trang
@@ -172,9 +170,7 @@ class MovieService {
 
     // Lọc phim theo thể loại
     final List<MovieModel> filteredMovies =
-        filterMovies
-            .where((m) => categoryId == 0 || m.categoryId == categoryId)
-            .toList();
+        filterMovies.where((m) => categoryId == 0 || m.categoryId == categoryId).toList();
 
     // Tính vị trí bắt đầu và kết thúc của trang
     int startIndex = (page - 1) * pageSize;
@@ -186,10 +182,7 @@ class MovieService {
     }
 
     // Trả về danh sách con của các phim theo trang
-    return filteredMovies.sublist(
-      startIndex,
-      endIndex.clamp(0, filteredMovies.length),
-    );
+    return filteredMovies.sublist(startIndex, endIndex.clamp(0, filteredMovies.length));
   }
 
   static Future<List<MovieModel>> loadMoviesByCategory(int categoryId) async {
@@ -208,8 +201,7 @@ class MovieService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       // Lấy danh sách phim đã lưu trước đó, nếu có
-      List<String>? savedMovieIds =
-          prefs.getStringList('saved_movies_$userId') ?? [];
+      List<String>? savedMovieIds = prefs.getStringList('saved_movies_$userId') ?? [];
 
       // Thêm ID của phim vào danh sách nếu chưa có
       if (!savedMovieIds.contains(movie.id.toString())) {
@@ -222,15 +214,11 @@ class MovieService {
   }
 
   // Hàm xóa phim khỏi danh sách đã lưu
-  static Future<void> removeSavedMovieByUser(
-    String userId,
-    MovieModel movie,
-  ) async {
+  static Future<void> removeSavedMovieByUser(String userId, MovieModel movie) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       // Lấy danh sách phim đã lưu trước đó, nếu có
-      List<String>? savedMovieIds =
-          prefs.getStringList('saved_movies_$userId') ?? [];
+      List<String>? savedMovieIds = prefs.getStringList('saved_movies_$userId') ?? [];
 
       // Xóa ID của phim khỏi danh sách
       savedMovieIds.remove(movie.id.toString());
