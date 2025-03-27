@@ -5,7 +5,7 @@ class MovieGrid extends StatelessWidget {
   final List<MovieModel> movies;
   final Function(String) onMovieTap; // Callback khi người dùng click vào movie
 
-  MovieGrid({required this.movies, required this.onMovieTap});
+  const MovieGrid({super.key, required this.movies, required this.onMovieTap});
 
   @override
   Widget build(BuildContext context) {

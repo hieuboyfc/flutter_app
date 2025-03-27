@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'auth_popup.dart';
-import '../../../data/models/movie_model.dart';
-import '../../../data/services/movie_service.dart';
-import '../../../presentation/screens/profile/profile_screen.dart';
+import 'package:netflix_app/data/models/movie_model.dart';
+import 'package:netflix_app/data/services/movie_service.dart';
+import 'package:netflix_app/presentation/screens/profile/profile_screen.dart';
+import 'package:netflix_app/presentation/widgets/home/header/auth_popup.dart';
 
 class HeaderWidget extends StatefulWidget {
   final Function(List<MovieModel>) onSearchResults;
@@ -11,10 +10,10 @@ class HeaderWidget extends StatefulWidget {
   const HeaderWidget({super.key, required this.onSearchResults});
 
   @override
-  _HeaderWidgetState createState() => _HeaderWidgetState();
+  HeaderWidgetState createState() => HeaderWidgetState();
 }
 
-class _HeaderWidgetState extends State<HeaderWidget> {
+class HeaderWidgetState extends State<HeaderWidget> {
   final TextEditingController _searchController = TextEditingController();
   List<MovieModel> _allMovies = [];
 
@@ -58,10 +57,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   void _goToProfile() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
   }
 
   /// 🚀 Load danh sách phim từ JSON
@@ -73,10 +69,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   void _filterMovies(String query) {
     List<MovieModel> filteredMovies =
         _allMovies
-            .where(
-              (movie) =>
-                  movie.title.toLowerCase().contains(query.toLowerCase()),
-            )
+            .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
             .toList();
     widget.onSearchResults(filteredMovies);
   }
@@ -121,9 +114,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 onTap: _showAuthPopup,
                 child: const CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage(
-                    'assets/images/default_avatar.png',
-                  ),
+                  backgroundImage: AssetImage('assets/images/default_avatar.png'),
                 ),
               )
               : PopupMenuButton<int>(
@@ -135,9 +126,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                   }
                 },
                 offset: const Offset(0, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 color: Colors.black87,
                 itemBuilder:
                     (context) => [
@@ -149,9 +138,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: [
                             const CircleAvatar(
                               radius: 20,
-                              backgroundImage: AssetImage(
-                                'assets/images/user_avatar.png',
-                              ),
+                              backgroundImage: AssetImage('assets/images/user_avatar.png'),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -176,10 +163,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: const [
                             Icon(Icons.settings, color: Colors.white),
                             SizedBox(width: 10),
-                            Text(
-                              "Hồ sơ",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            Text("Hồ sơ", style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -191,10 +175,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           children: const [
                             Icon(Icons.exit_to_app, color: Colors.red),
                             SizedBox(width: 10),
-                            Text(
-                              "Đăng xuất",
-                              style: TextStyle(color: Colors.red),
-                            ),
+                            Text("Đăng xuất", style: TextStyle(color: Colors.red)),
                           ],
                         ),
                       ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:netflix_app/core/utils/utils.dart';
 import 'package:netflix_app/data/models/category_model.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
-import 'package:netflix_app/utils/utils.dart';
-import 'package:netflix_app/widgets/custom/pagination_widget.dart';
-import 'package:netflix_app/widgets/home/content/movie_grid.dart';
+import 'package:netflix_app/presentation/widgets/common/pagination_widget.dart';
+import 'package:netflix_app/presentation/widgets/home/content/movie_grid.dart';
 
 class MovieTypeScreen extends StatefulWidget {
   final String code;

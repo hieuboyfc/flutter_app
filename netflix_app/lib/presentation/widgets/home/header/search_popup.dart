@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/movie_model.dart';
+import 'package:netflix_app/data/models/movie_model.dart';
 
 class SearchPopup extends StatelessWidget {
   final List<MovieModel> searchResults;
   final VoidCallback onClose;
 
-  const SearchPopup({
-    super.key,
-    required this.searchResults,
-    required this.onClose,
-  });
+  const SearchPopup({super.key, required this.searchResults, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +57,8 @@ class SearchPopup extends StatelessWidget {
                           return GestureDetector(
                             onTap: onClose,
                             child: ListTile(
-                              leading: Image.network(
-                                movie.image,
-                                width: 50,
-                                fit: BoxFit.cover,
-                              ),
-                              title: Text(
-                                movie.title,
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                              leading: Image.network(movie.image, width: 50, fit: BoxFit.cover),
+                              title: Text(movie.title, style: const TextStyle(color: Colors.white)),
                             ),
                           );
                         }).toList(),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../screens/base/base_screen.dart';
+import 'package:netflix_app/presentation/screens/base/base_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

@@ -4,8 +4,8 @@ import 'package:netflix_app/data/models/category_model.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
-import 'package:netflix_app/widgets/custom/pagination_widget.dart';
-import 'package:netflix_app/widgets/home/content/movie_grid.dart';
+import 'package:netflix_app/presentation/widgets/common/pagination_widget.dart';
+import 'package:netflix_app/presentation/widgets/home/content/movie_grid.dart';
 
 class MovieCategoryScreen extends StatefulWidget {
   final int categoryId;

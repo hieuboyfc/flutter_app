@@ -1,16 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:netflix_app/core/utils/utils.dart';
 import 'package:netflix_app/data/models/category_model.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/auth_service.dart';
 import 'package:netflix_app/data/services/category_service.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
-import 'package:netflix_app/utils/utils.dart';
-import 'package:netflix_app/widgets/custom/marquee_text.dart';
-import 'package:netflix_app/widgets/custom/sticky_header_delegate.dart';
-
-import '../../screens/base/base_screen.dart';
+import 'package:netflix_app/presentation/screens/base/base_screen.dart';
+import 'package:netflix_app/presentation/widgets/common/marquee_text.dart';
+import 'package:netflix_app/presentation/widgets/common/sticky_header_delegate.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -67,9 +66,7 @@ class HomeScreenState extends State<HomeScreen> {
     var fetchNewMovies = await MovieService.loadNewMovies();
 
     List<MovieModel> fetchSavedMovies =
-        loggedInUser != null
-            ? await MovieService.loadSavedMovies(loggedInUser!)
-            : [];
+        loggedInUser != null ? await MovieService.loadSavedMovies(loggedInUser!) : [];
 
     setState(() {
       moviesByDay = fetchMoviesByDay;
@@ -88,19 +85,13 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void _initScrollControllers() {
-    List<String> movieByKeyTitles = [
-      "movies_by_day",
-      "hot_movies",
-      "new_movies",
-      "saved_movies",
-    ];
+    List<String> movieByKeyTitles = ["movies_by_day", "hot_movies", "new_movies", "saved_movies"];
 
     for (var keyTitle in movieByKeyTitles) {
       _scrollControllers[keyTitle] =
           ScrollController()..addListener(() {
             if (_scrollControllers[keyTitle]!.position.pixels >=
-                    _scrollControllers[keyTitle]!.position.maxScrollExtent -
-                        100 &&
+                    _scrollControllers[keyTitle]!.position.maxScrollExtent - 100 &&
                 !_isLoadingMore[keyTitle]!) {
               _loadMoreMovies(keyTitle);
             }
@@ -109,12 +100,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void _initPaginationState() {
-    List<String> movieByKeyTitles = [
-      "movies_by_day",
-      "hot_movies",
-      "new_movies",
-      "saved_movies",
-    ];
+    List<String> movieByKeyTitles = ["movies_by_day", "hot_movies", "new_movies", "saved_movies"];
 
     for (var keyTitle in movieByKeyTitles) {
       _currentPage[keyTitle] = 1;
@@ -124,8 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadMoreMovies(String keyTitle) async {
-    if (_isLoadingMore[keyTitle]! ||
-        _currentPage[keyTitle]! >= _totalPages[keyTitle]!) {
+    if (_isLoadingMore[keyTitle]! || _currentPage[keyTitle]! >= _totalPages[keyTitle]!) {
       return;
     }
 
@@ -139,10 +124,7 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       switch (keyTitle) {
         case "movies_by_day":
-          moviesFuture = MovieService.loadMoviesByDay(
-            _selectedDay,
-            page: newPage,
-          );
+          moviesFuture = MovieService.loadMoviesByDay(_selectedDay, page: newPage);
           break;
         case "hot_movies":
           moviesFuture = MovieService.loadHotMovies(page: newPage);
@@ -152,10 +134,7 @@ class HomeScreenState extends State<HomeScreen> {
           break;
         case "saved_movies":
           if (loggedInUser != null) {
-            moviesFuture = MovieService.loadSavedMovies(
-              loggedInUser!,
-              page: newPage,
-            );
+            moviesFuture = MovieService.loadSavedMovies(loggedInUser!, page: newPage);
           } else {
             print("Tránh việc gọi API nếu chưa có người dùng đăng nhập");
             return;
@@ -266,8 +245,7 @@ class HomeScreenState extends State<HomeScreen> {
       }
 
       // Cuộn về đầu nếu có dữ liệu
-      if (fetchMovies.isNotEmpty &&
-          _scrollControllers[keyTitle]?.hasClients == true) {
+      if (fetchMovies.isNotEmpty && _scrollControllers[keyTitle]?.hasClients == true) {
         // Đảm bảo chỉ cuộn sau khi dữ liệu đã được tải xong
         _scrollControllers[keyTitle]?.jumpTo(0); // Cuộn về đầu
       }
@@ -304,23 +282,14 @@ class HomeScreenState extends State<HomeScreen> {
                     child: FutureBuilder<List<MovieModel>>(
                       future: _moviesFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError ||
                             !snapshot.hasData ||
                             snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text("Không có phim nào!"),
-                          );
+                          return const Center(child: Text("Không có phim nào!"));
                         }
-                        return Column(
-                          children: [
-                            _buildFeaturedMoviesSlider(snapshot.data!),
-                          ],
-                        );
+                        return Column(children: [_buildFeaturedMoviesSlider(snapshot.data!)]);
                       },
                     ),
                   ),
@@ -350,20 +319,14 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
 
                 // Danh sách phim Hot
-                SliverToBoxAdapter(
-                  child: _buildMovieList("hot_movies", hotMovies),
-                ),
+                SliverToBoxAdapter(child: _buildMovieList("hot_movies", hotMovies)),
 
                 // Danh sách phim Mới
-                SliverToBoxAdapter(
-                  child: _buildMovieList("new_movies", newMovies),
-                ),
+                SliverToBoxAdapter(child: _buildMovieList("new_movies", newMovies)),
 
                 // Danh sách phim Đã lưu
                 if (loggedInUser != null)
-                  SliverToBoxAdapter(
-                    child: _buildMovieList("saved_movies", savedMovies),
-                  ),
+                  SliverToBoxAdapter(child: _buildMovieList("saved_movies", savedMovies)),
               ],
             ),
           ),
@@ -391,10 +354,7 @@ class HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: NetworkImage(movie.image),
-                  fit: BoxFit.cover,
-                ),
+                image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -420,9 +380,7 @@ class HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(5, (index) {
                             return Icon(
-                              index < movie.rating
-                                  ? Icons.star
-                                  : Icons.star_border,
+                              index < movie.rating ? Icons.star : Icons.star_border,
                               color: Colors.yellow,
                               size: 16,
                             );
@@ -457,32 +415,21 @@ class HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator(color: Colors.red));
-          } else if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data!.isEmpty) {
-            return Center(
-              child: Text(
-                "Không có thể loại!",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
+          } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text("Không có thể loại!", style: TextStyle(color: Colors.white)));
           }
 
           return LayoutBuilder(
             builder: (context, constraints) {
-              double totalWidth =
-                  snapshot.data!.length * 120.0; // Ước tính chiều rộng tổng
+              double totalWidth = snapshot.data!.length * 120.0; // Ước tính chiều rộng tổng
               bool shouldCenter =
-                  totalWidth <
-                  constraints.maxWidth; // Kiểm tra có cần căn giữa không
+                  totalWidth < constraints.maxWidth; // Kiểm tra có cần căn giữa không
 
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   mainAxisAlignment:
-                      shouldCenter
-                          ? MainAxisAlignment.center
-                          : MainAxisAlignment.start,
+                      shouldCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
                   children:
                       snapshot.data!.map((category) {
                         return GestureDetector(
@@ -491,22 +438,14 @@ class HomeScreenState extends State<HomeScreen> {
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 5),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
+                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             decoration: BoxDecoration(
                               color: Colors.grey[900],
                               borderRadius: BorderRadius.circular(15),
-                              border: Border.all(
-                                color: Colors.redAccent,
-                                width: 1.5,
-                              ),
+                              border: Border.all(color: Colors.redAccent, width: 1.5),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.redAccent.withValues(
-                                    alpha: 0.3,
-                                  ),
+                                  color: Colors.redAccent.withValues(alpha: 0.3),
                                   blurRadius: 5,
                                   offset: Offset(0, 2),
                                 ),
@@ -542,11 +481,7 @@ class HomeScreenState extends State<HomeScreen> {
         color: Colors.white,
         letterSpacing: 1.5,
         shadows: [
-          Shadow(
-            blurRadius: 4.0,
-            color: Colors.black.withValues(alpha: 0.6),
-            offset: Offset(0, 2),
-          ),
+          Shadow(blurRadius: 4.0, color: Colors.black.withValues(alpha: 0.6), offset: Offset(0, 2)),
         ],
       ),
     );
@@ -566,37 +501,22 @@ class HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               // Để Row chỉ chiếm đúng kích thước cần thiết
-              mainAxisAlignment:
-                  shouldCenter
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.start,
+              mainAxisAlignment: shouldCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
               children: List.generate(weekDays.length, (index) {
                 // Kiểm tra xem index có hợp lệ không
                 if (index >= 0 && index < weekDays.length) {
                   return GestureDetector(
                     onTap: () async => _updateMoviesByDay(index),
                     child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 10,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
-                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
-                        color:
-                            _selectedDay == index
-                                ? Colors.redAccent
-                                : Colors.grey,
+                        color: _selectedDay == index ? Colors.redAccent : Colors.grey,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Text(
                         weekDays[index],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
                   );
@@ -729,10 +649,7 @@ class HomeScreenState extends State<HomeScreen> {
                   context.go('/movie/type/$keyTitle');
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.redAccent, width: 1.5),
@@ -759,8 +676,7 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   color: Colors.black.withValues(alpha: 0.5), // Mờ nền
                   child: const Center(
-                    child:
-                        CircularProgressIndicator(), // Vòng quay giữa màn hình
+                    child: CircularProgressIndicator(), // Vòng quay giữa màn hình
                   ),
                 ),
               ),
@@ -770,11 +686,7 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMovieListContentByDay(
-    String keyTitle,
-    List<MovieModel> movies,
-    bool isLoading,
-  ) {
+  Widget _buildMovieListContentByDay(String keyTitle, List<MovieModel> movies, bool isLoading) {
     // Chỉ cuộn khi có dữ liệu và scrollController đã được gán
     /*if (movies.isNotEmpty && _scrollControllers[keyTitle]?.hasClients == true) {
       // Kiểm tra nếu scrollController đã được gán và có clients
@@ -789,18 +701,14 @@ class HomeScreenState extends State<HomeScreen> {
         itemCount: movies.length + (isLoading ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == movies.length) {
-            // Hiển thị vòng xoay khi đang tải thêm
-            return Center(child: CircularProgressIndicator());
+            return Center();
           }
           final movie = movies[index];
           return Container(
             width: 150,
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(movie.image),
-                fit: BoxFit.cover,
-              ),
+              image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -838,24 +746,12 @@ class HomeScreenState extends State<HomeScreen> {
                           Row(
                             children: List.generate(5, (starIndex) {
                               if (starIndex < movie.rating.floor()) {
-                                return Icon(
-                                  Icons.star,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star, size: 14, color: Colors.yellow);
                               } else if (starIndex == movie.rating.floor() &&
                                   movie.rating % 1 >= 0.5) {
-                                return Icon(
-                                  Icons.star_half,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star_half, size: 14, color: Colors.yellow);
                               } else {
-                                return Icon(
-                                  Icons.star_border,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star_border, size: 14, color: Colors.yellow);
                               }
                             }),
                           ),
@@ -918,10 +814,7 @@ class HomeScreenState extends State<HomeScreen> {
                   context.go('/movie/type/$keyTitle');
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.redAccent, width: 1.5),
@@ -948,8 +841,7 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   color: Colors.black.withValues(alpha: 0.5), // Mờ nền
                   child: const Center(
-                    child:
-                        CircularProgressIndicator(), // Vòng quay giữa màn hình
+                    child: CircularProgressIndicator(), // Vòng quay giữa màn hình
                   ),
                 ),
               ),
@@ -976,10 +868,7 @@ class HomeScreenState extends State<HomeScreen> {
             width: 180,
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(movie.image),
-                fit: BoxFit.cover,
-              ),
+              image: DecorationImage(image: NetworkImage(movie.image), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -1017,24 +906,12 @@ class HomeScreenState extends State<HomeScreen> {
                           Row(
                             children: List.generate(5, (starIndex) {
                               if (starIndex < movie.rating.floor()) {
-                                return Icon(
-                                  Icons.star,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star, size: 14, color: Colors.yellow);
                               } else if (starIndex == movie.rating.floor() &&
                                   movie.rating % 1 >= 0.5) {
-                                return Icon(
-                                  Icons.star_half,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star_half, size: 14, color: Colors.yellow);
                               } else {
-                                return Icon(
-                                  Icons.star_border,
-                                  size: 14,
-                                  color: Colors.yellow,
-                                );
+                                return Icon(Icons.star_border, size: 14, color: Colors.yellow);
                               }
                             }),
                           ),

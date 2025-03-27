@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../data/services/auth_service.dart';
+import 'package:netflix_app/data/services/auth_service.dart';
 
 class AuthPopup extends StatefulWidget {
   final VoidCallback onClose;
@@ -12,10 +12,10 @@ class AuthPopup extends StatefulWidget {
   });
 
   @override
-  _AuthPopupState createState() => _AuthPopupState();
+  AuthPopupState createState() => AuthPopupState();
 }
 
-class _AuthPopupState extends State<AuthPopup>
+class AuthPopupState extends State<AuthPopup>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();

@@ -5,7 +5,7 @@ class PaginationWidget extends StatelessWidget {
   final int totalPages;
   final Function(int) onPageChanged;
 
-  PaginationWidget({
+  const PaginationWidget({super.key,
     required this.currentPage,
     required this.totalPages,
     required this.onPageChanged,

@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../data/models/movie_model.dart';
-import '../../../widgets/home/header/header_widget.dart';
-import '../../../widgets/home/header/search_popup.dart';
+import 'package:netflix_app/data/models/movie_model.dart';
+import 'package:netflix_app/presentation/widgets/home/header/header_widget.dart';
+import 'package:netflix_app/presentation/widgets/home/header/search_popup.dart';
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
   final int initialIndex;
   final bool showHeader;
 
-  const BaseScreen({
-    super.key,
-    required this.body,
-    this.initialIndex = 0,
-    this.showHeader = true,
-  });
+  const BaseScreen({super.key, required this.body, this.initialIndex = 0, this.showHeader = true});
 
   @override
   BaseScreenState createState() => BaseScreenState();
@@ -62,12 +56,7 @@ class BaseScreenState extends State<BaseScreen> {
     }
   }
 
-  Widget _buildNavItem(
-    IconData icon,
-    IconData selectedIcon,
-    String label,
-    int index,
-  ) {
+  Widget _buildNavItem(IconData icon, IconData selectedIcon, String label, int index) {
     bool isSelected = _selectedIndex == index;
 
     return GestureDetector(
@@ -91,22 +80,12 @@ class BaseScreenState extends State<BaseScreen> {
               curve: Curves.easeInOut,
               padding:
                   isSelected
-                      ? EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                        left: 15,
-                        right: 15,
-                      )
+                      ? EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15)
                       : EdgeInsets.all(0),
               // Tạo không gian cho lớp phủ
               decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? Colors.red.withValues(alpha: 0.2)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(
-                  10,
-                ), // Góc bo tròn phù hợp với icon
+                color: isSelected ? Colors.red.withValues(alpha: 0.2) : Colors.transparent,
+                borderRadius: BorderRadius.circular(10), // Góc bo tròn phù hợp với icon
               ),
               child: Icon(
                 isSelected ? selectedIcon : icon,
@@ -170,12 +149,7 @@ class BaseScreenState extends State<BaseScreen> {
           children: [
             _buildNavItem(Icons.home_outlined, Icons.home, 'Trang Chủ', 0),
             _buildNavItem(Icons.search, Icons.search, 'Tìm kiếm', 1),
-            _buildNavItem(
-              Icons.playlist_add_check,
-              Icons.playlist_add_check,
-              'Danh sách',
-              2,
-            ),
+            _buildNavItem(Icons.playlist_add_check, Icons.playlist_add_check, 'Danh sách', 2),
             _buildNavItem(Icons.person_outline, Icons.person, 'Cá nhân', 3),
           ],
         ),
