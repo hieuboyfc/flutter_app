@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "id": "cmt1",
+      "userName": "Nguyễn Văn A",
+      "avatarUrl": "https://i.pravatar.cc/150?img=1",
+      "content": "Bình luận số 1",
+      "timestamp": "2025-03-31T10:00:00Z",
+      "replies": [
+        {
+          "id": "reply1_1",
+          "userName": "Lê Thị B",
+          "avatarUrl": "https://i.pravatar.cc/150?img=2",
+          "content": "Trả lời bình luận 1 - 1",
+          "timestamp": "2025-03-31T10:05:00Z"
+        },
+        {
+          "id": "reply1_2",
+          "userName": "Trần Văn C",
+          "avatarUrl": "https://i.pravatar.cc/150?img=3",
+          "content": "Trả lời bình luận 1 - 2",
+          "timestamp": "2025-03-31T10:10:00Z"
+        }
+      ]
+    },
+    {
+      "id": "cmt2",
+      "userName": "Hoàng Đức D",
+      "avatarUrl": "https://i.pravatar.cc/150?img=4",
+      "content": "Bình luận số 2",
+      "timestamp": "2025-03-31T09:55:00Z",
+      "replies": [
+        {
+          "id": "reply2_1",
+          "userName": "Phạm Thị E",
+          "avatarUrl": "https://i.pravatar.cc/150?img=5",
+          "content": "Trả lời bình luận 2 - 1",
+          "timestamp": "2025-03-31T09:57:00Z"
+        }
+      ]
+    },
+    {
+      "id": "cmt3",
+      "userName": "Võ Minh F",
+      "avatarUrl": "https://i.pravatar.cc/150?img=6",
+      "content": "Bình luận số 3",
+      "timestamp": "2025-03-31T09:50:00Z",
+      "replies": []
+    },
+    {
+      "id": "cmt4",
+      "userName": "Nguyễn Quang G",
+      "avatarUrl": "https://i.pravatar.cc/150?img=7",
+      "content": "Bình luận số 4",
+      "timestamp": "2025-03-31T09:45:00Z",
+      "replies": [
+        {
+          "id": "reply4_1",
+          "userName": "Trần Hải H",
+          "avatarUrl": "https://i.pravatar.cc/150?img=8",
+          "content": "Trả lời bình luận 4 - 1",
+          "timestamp": "2025-03-31T09:47:00Z"
+        },
+        {
+          "id": "reply4_2",
+          "userName": "Lê Văn I",
+          "avatarUrl": "https://i.pravatar.cc/150?img=9",
+          "content": "Trả lời bình luận 4 - 2",
+          "timestamp": "2025-03-31T09:48:00Z"
+        },
+        {
+          "id": "reply4_3",
+          "userName": "Phạm Anh J",
+          "avatarUrl": "https://i.pravatar.cc/150?img=10",
+          "content": "Trả lời bình luận 4 - 3",
+          "timestamp": "2025-03-31T09:49:00Z"
+        }
+      ]
+    },
+    {
+      "id": "cmt5",
+      "userName": "Đặng Thị K",
+      "avatarUrl": "https://i.pravatar.cc/150?img=11",
+      "content": "Bình luận số 5",
+      "timestamp": "2025-03-31T09:40:00Z",
+      "replies": []
+    },
+    {
+      "id": "cmt6",
+      "userName": "Phan Văn L",
+      "avatarUrl": "https://i.pravatar.cc/150?img=12",
+      "content": "Bình luận số 6",
+      "timestamp": "2025-03-31T09:35:00Z",
+      "replies": [
+        {
+          "id": "reply6_1",
+          "userName": "Lý Thị M",
+          "avatarUrl": "https://i.pravatar.cc/150?img=13",
+          "content": "Trả lời bình luận 6 - 1",
+          "timestamp": "2025-03-31T09:37:00Z"
+        },
+        {
+          "id": "reply6_2",
+          "userName": "Nguyễn Minh N",
+          "avatarUrl": "https://i.pravatar.cc/150?img=14",
+          "content": "Trả lời bình luận 6 - 2",
+          "timestamp": "2025-03-31T09:38:00Z"
+        }
+      ]
+    }
+  ]
+}

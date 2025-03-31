@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:netflix_app/data/models/movie_model.dart';
 import 'package:netflix_app/data/services/movie_service.dart';
+import 'package:netflix_app/presentation/widgets/common/comment_section.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final int movieId;
@@ -57,8 +58,10 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
               children: [
                 // 📌 Ảnh + Thông tin phim (Căn giữa, tự co giãn)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // 📌 Căn giữa toàn bộ nội dung
-                  crossAxisAlignment: CrossAxisAlignment.start, // 📌 Chữ sẽ nằm trên cùng
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // 📌 Căn giữa toàn bộ nội dung
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // 📌 Chữ sẽ nằm trên cùng
                   children: [
                     // 📌 Ảnh phim
                     Flexible(
@@ -81,11 +84,15 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                     Flexible(
                       flex: 3, // Chia tỉ lệ 2:3 giữa ảnh và chữ
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // 📌 Căn giữa chữ
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // 📌 Căn giữa chữ
                         children: [
                           Text(
                             movie.title,
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
                             textAlign: TextAlign.center, // 📌 Căn giữa văn bản
                           ),
                           const SizedBox(height: 8),
@@ -156,86 +163,15 @@ class MovieDetailScreenState extends State<MovieDetailScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                ..._buildFakeComments(),
+                SizedBox(
+                  height: 500, // Hoặc một giá trị phù hợp
+                  child: CommentSection(movieId: widget.movieId),
+                ),
               ],
             ),
           );
         },
       ),
-    );
-  }
-
-  // 🔥 Danh sách bình luận + Trả lời bình luận
-  List<Widget> _buildFakeComments() {
-    List<Map<String, dynamic>> fakeComments = [
-      {
-        "name": "Nguyễn Văn A",
-        "comment": "Phim rất hay!",
-        "replies": [
-          {"name": "Trần Thị B", "comment": "Đúng rồi, mình cũng thích lắm!"},
-          {"name": "Lê Văn C", "comment": "Bạn coi ở đâu thế?"},
-        ],
-      },
-      {
-        "name": "Trần Thị D",
-        "comment": "Mình thích diễn viên chính ❤️",
-        "replies": [
-          {"name": "Nguyễn Văn E", "comment": "Chuẩn luôn, diễn quá đỉnh!"},
-        ],
-      },
-      {"name": "Lê Văn F", "comment": "Cảnh quay mãn nhãn quá!", "replies": []},
-    ];
-
-    return fakeComments.map((cmt) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 📌 Bình luận chính
-          _buildCommentItem(cmt["name"], cmt["comment"]),
-
-          // 📌 Danh sách câu trả lời (nếu có)
-          if (cmt["replies"].isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(left: 40), // 📌 Lùi vào để làm reply
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    cmt["replies"]
-                        .map<Widget>((reply) => _buildCommentItem(reply["name"], reply["comment"]))
-                        .toList(),
-              ),
-            ),
-
-          // 📌 Khoảng cách giữa các bình luận
-          const SizedBox(height: 8),
-        ],
-      );
-    }).toList();
-  }
-
-  // ✅ Widget hiển thị 1 bình luận
-  Widget _buildCommentItem(String name, String comment) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Ảnh đại diện
-        const CircleAvatar(
-          backgroundColor: Colors.blue,
-          child: Icon(Icons.person, color: Colors.white),
-        ),
-        const SizedBox(width: 8),
-
-        // Nội dung bình luận
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(comment),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

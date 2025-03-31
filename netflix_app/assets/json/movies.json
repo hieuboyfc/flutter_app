@@ -54,7 +54,7 @@
   {
     "id": 3,
     "title": "John Wick: Chapter 4",
-    "image": "https://image.tmdb.org/t/p/w500/gh2bmprLtUQ8oXCSluzfqaicyrm.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 0,
@@ -80,7 +80,7 @@
   {
     "id": 4,
     "title": "Spider-Man: Across the Spider-Verse",
-    "image": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 1,
@@ -106,7 +106,7 @@
   {
     "id": 5,
     "title": "The Super Mario Bros. Movie",
-    "image": "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 4,
@@ -132,7 +132,7 @@
   {
     "id": 6,
     "title": "Dune: Part Two",
-    "image": "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 3,
@@ -158,7 +158,7 @@
   {
     "id": 7,
     "title": "Mission: Impossible - Dead Reckoning Part One",
-    "image": "https://image.tmdb.org/t/p/w500/NNxYkU70HPurnNCSiCjYAmacwm.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 2,
@@ -184,7 +184,7 @@
   {
     "id": 8,
     "title": "Guardians of the Galaxy Vol. 3",
-    "image": "https://image.tmdb.org/t/p/w500/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 4,
@@ -210,7 +210,7 @@
   {
     "id": 9,
     "title": "The Flash",
-    "image": "https://image.tmdb.org/t/p/w500/4IaNd2fsu1ypgyZ65g2bOUq7ap1.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 6,
@@ -236,7 +236,7 @@
   {
     "id": 10,
     "title": "Barbie",
-    "image": "https://image.tmdb.org/t/p/w500/xqfXuX8zJbQTT9D9npkCeLf8h39.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 5,
@@ -262,7 +262,7 @@
   {
     "id": 11,
     "title": "Transformers: Rise of the Beasts",
-    "image": "https://image.tmdb.org/t/p/w500/o9hH8Ex9V06Hk3nmrhxDltDPsAe.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 0,
@@ -288,7 +288,7 @@
   {
     "id": 12,
     "title": "Indiana Jones and the Dial of Destiny",
-    "image": "https://image.tmdb.org/t/p/w500/k9GmNh53XZZFvlxfRqlOwGjpFhK.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 3,
@@ -313,7 +313,7 @@
   {
     "id": 13,
     "title": "The Little Mermaid",
-    "image": "https://image.tmdb.org/t/p/w500/x5jtGGKiTjkP3kNJtdF9mxLv5Pz.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 5,
@@ -339,7 +339,7 @@
   {
     "id": 14,
     "title": "The Hunger Games: The Ballad of Songbirds and Snakes",
-    "image": "https://image.tmdb.org/t/p/w500/4Zt6qz2l8Wlcm6DL5frQ7g3FC8g.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.5,
     "weekDay": 0,
@@ -365,7 +365,7 @@
   {
     "id": 15,
     "title": "The Marvels",
-    "image": "https://image.tmdb.org/t/p/w500/mZGG0v7ZtD1lu3BaXlt99yHzYrx.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 6,
@@ -391,7 +391,7 @@
   {
     "id": 16,
     "title": "Wonka",
-    "image": "https://image.tmdb.org/t/p/w500/1hNqIq4ZQ0Jp4F6p8pGnLw7Kw0P.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 4,
@@ -417,7 +417,7 @@
   {
     "id": 17,
     "title": "Napoleon",
-    "image": "https://image.tmdb.org/t/p/w500/cXsbltiayitOCEtn6H9VWh8y3wH.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 8.0,
     "weekDay": 2,
@@ -442,7 +442,7 @@
   {
     "id": 18,
     "title": "The Equalizer 3",
-    "image": "https://image.tmdb.org/t/p/w500/bhxrN2UwbEB8G0vv49HZDJhPzgj.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.5,
     "weekDay": 1,
@@ -468,7 +468,7 @@
   {
     "id": 19,
     "title": "The Nun II",
-    "image": "https://image.tmdb.org/t/p/w500/yF3qGlhsoSjpq58NnmL6D8tPjjf.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 7.0,
     "weekDay": 4,
@@ -494,7 +494,7 @@
   {
     "id": 20,
     "title": "The Equalizer",
-    "image": "https://image.tmdb.org/t/p/w500/q77zYPf0eGfHbdk7WlbL6v7vTrH.jpg",
+    "image": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     "episodes": 1,
     "rating": 6.0,
     "weekDay": 2,
