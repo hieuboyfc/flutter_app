@@ -15,8 +15,14 @@ class CommentSection extends StatefulWidget {
 class CommentSectionState extends State<CommentSection> {
   List<CommentModel> allComments = [];
   List<CommentModel> displayedComments = [];
-  final int initialCommentsToShow = 10;
+  final int initialCommentsToShow = 20; // Hiển thị tối đa 20 bình luận gốc
+  final int initialRepliesToShow =
+      5; // Hiển thị tối đa 5 bình luận trả lời ban đầu
+  Map<String, int> repliesShown = {}; // Lưu trữ số lượng trả lời đã hiển thị
   Map<String, CommentModel> tempReplies = {};
+
+  bool isLoadingComments = false; // Biến trạng thái loading cho bình luận
+  bool isLoadingReplies = false; // Biến trạng thái loading cho trả lời
 
   @override
   void initState() {
@@ -32,7 +38,22 @@ class CommentSectionState extends State<CommentSection> {
         avatarUrl: 'https://i.pravatar.cc/150?img=${index % 70}',
         content: 'Bình luận cho phim $movieId - $index',
         timestamp: DateTime.now().subtract(Duration(minutes: index * 5)),
-        replies: [],
+        replies: List.generate(10, (replyIndex) {
+          return CommentModel(
+            id: 'reply$index$replyIndex',
+            userName: 'User Reply $replyIndex',
+            avatarUrl:
+                'https://i.pravatar.cc/150?img=${(index + replyIndex) % 70}',
+            content: 'Bình luận trả lời $replyIndex cho bình luận $index',
+            timestamp: DateTime.now().subtract(
+              Duration(minutes: (index + replyIndex) * 3),
+            ),
+            replies: [],
+            userReaction: null,
+            edited: false,
+            originalContent: null,
+          );
+        }),
         userReaction: null,
         edited: false,
         originalContent: null,
@@ -45,11 +66,37 @@ class CommentSectionState extends State<CommentSection> {
     });
   }
 
+  // Hàm load thêm bình luận
   void _loadMoreComments() {
-    int currentLength = displayedComments.length;
-    int nextLength = min(currentLength + 10, allComments.length);
     setState(() {
-      displayedComments = allComments.take(nextLength).toList();
+      isLoadingComments = true; // Bắt đầu loading thêm bình luận
+    });
+
+    int currentLength = displayedComments.length;
+    int nextLength = min(currentLength + 20, allComments.length);
+
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        displayedComments = allComments.take(nextLength).toList();
+        isLoadingComments = false; // Kết thúc loading
+      });
+    });
+  }
+
+  // Hàm load thêm trả lời
+  void _loadMoreReplies(CommentModel comment) {
+    setState(() {
+      isLoadingReplies = true; // Bắt đầu loading trả lời
+    });
+
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        repliesShown[comment.id] = min(
+          (repliesShown[comment.id] ?? 5) + 5,
+          comment.replies.length,
+        );
+        isLoadingReplies = false; // Kết thúc loading trả lời
+      });
     });
   }
 
@@ -187,32 +234,70 @@ class CommentSectionState extends State<CommentSection> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8.0),
-      itemCount: displayedComments.length + 1, // Thêm 1 cho ô nhập liệu
-      itemBuilder: (context, index) {
-        // Ô nhập liệu luôn hiển thị ở đầu
-        if (index == 0) {
-          return _buildNewCommentInput(); // Ô nhập liệu
-        }
-
-        final comment =
-            displayedComments[index - 1]; // Lấy bình luận sau ô nhập liệu
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildCommentTile(comment), // Hiển thị bình luận
-            if (comment.replies.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: Column(
-                  children: comment.replies.map(_buildCommentTile).toList(),
-                ),
-              ),
-          ],
-        );
-      },
+    return Column(
+      children: [
+        _buildNewCommentInput(),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(8.0),
+            itemCount: displayedComments.length,
+            itemBuilder: (context, index) {
+              final comment = displayedComments[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCommentTile(comment),
+                  if (comment.replies.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Column(
+                        children: [
+                          ...comment.replies
+                              .take(
+                                repliesShown[comment.id] ??
+                                    initialRepliesToShow,
+                              )
+                              .map(_buildCommentTile)
+                              .toList(),
+                          // Chỉ hiển thị nút "Tải thêm trả lời" nếu có nhiều trả lời
+                          if (comment.replies.length >
+                              (repliesShown[comment.id] ??
+                                  initialRepliesToShow))
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Center(
+                                child:
+                                    isLoadingReplies
+                                        ? CircularProgressIndicator() // Hiển thị loading
+                                        : TextButton(
+                                          onPressed:
+                                              () => _loadMoreReplies(comment),
+                                          child: Text('Tải thêm trả lời'),
+                                        ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+        if (displayedComments.length < allComments.length)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Center(
+              child:
+                  isLoadingComments
+                      ? CircularProgressIndicator() // Hiển thị loading
+                      : TextButton(
+                        onPressed: _loadMoreComments,
+                        child: Text('Tải thêm bình luận'),
+                      ),
+            ),
+          ),
+      ],
     );
   }
 
